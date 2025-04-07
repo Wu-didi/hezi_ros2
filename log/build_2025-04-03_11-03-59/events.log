@@ -1,0 +1,13 @@
+[0.000000] (-) TimerEvent: {}
+[0.000738] (-) JobUnselected: {'identifier': 'follow_traj'}
+[0.001223] (-) JobUnselected: {'identifier': 'follow_traj_wd'}
+[0.001522] (follow_traj_re) JobQueued: {'identifier': 'follow_traj_re', 'dependencies': OrderedDict()}
+[0.001662] (follow_traj_re) JobStarted: {'identifier': 'follow_traj_re'}
+[0.099376] (-) TimerEvent: {}
+[0.200187] (-) TimerEvent: {}
+[0.301536] (-) TimerEvent: {}
+[0.404046] (-) TimerEvent: {}
+[0.505908] (-) TimerEvent: {}
+[0.607089] (-) TimerEvent: {}
+[0.654133] (follow_traj_re) JobEnded: {'identifier': 'follow_traj_re', 'rc': 0}
+[0.656668] (-) EventReactorShutdown: {}

@@ -1,0 +1,30 @@
+[3.527s] Invoking command in '/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj': PYTHONPATH=/home/nvidia/vcii/hezi_ros2/build/follow_traj/prefix_override:/home/nvidia/vcii/hezi_ros2/install/follow_traj/lib/python3.8/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base ../../../build/follow_traj build --build-base /home/nvidia/vcii/hezi_ros2/build/follow_traj/build install --record /home/nvidia/vcii/hezi_ros2/build/follow_traj/install.log --single-version-externally-managed
+[3.852s] running egg_info
+[3.852s] writing ../../../build/follow_traj/follow_traj.egg-info/PKG-INFO
+[3.853s] writing dependency_links to ../../../build/follow_traj/follow_traj.egg-info/dependency_links.txt
+[3.853s] writing entry points to ../../../build/follow_traj/follow_traj.egg-info/entry_points.txt
+[3.854s] writing requirements to ../../../build/follow_traj/follow_traj.egg-info/requires.txt
+[3.854s] writing top-level names to ../../../build/follow_traj/follow_traj.egg-info/top_level.txt
+[3.901s] reading manifest file '../../../build/follow_traj/follow_traj.egg-info/SOURCES.txt'
+[3.902s] writing manifest file '../../../build/follow_traj/follow_traj.egg-info/SOURCES.txt'
+[3.902s] running build
+[3.902s] running build_py
+[3.903s] running install
+[3.904s] running install_lib
+[3.906s] creating /home/nvidia/vcii/hezi_ros2/install/follow_traj/lib/python3.8/site-packages/follow_traj
+[3.907s] copying /home/nvidia/vcii/hezi_ros2/build/follow_traj/build/lib/follow_traj/simulator_node.py -> /home/nvidia/vcii/hezi_ros2/install/follow_traj/lib/python3.8/site-packages/follow_traj
+[3.907s] copying /home/nvidia/vcii/hezi_ros2/build/follow_traj/build/lib/follow_traj/mpc_node.py -> /home/nvidia/vcii/hezi_ros2/install/follow_traj/lib/python3.8/site-packages/follow_traj
+[3.907s] copying /home/nvidia/vcii/hezi_ros2/build/follow_traj/build/lib/follow_traj/__init__.py -> /home/nvidia/vcii/hezi_ros2/install/follow_traj/lib/python3.8/site-packages/follow_traj
+[3.908s] copying /home/nvidia/vcii/hezi_ros2/build/follow_traj/build/lib/follow_traj/my.py -> /home/nvidia/vcii/hezi_ros2/install/follow_traj/lib/python3.8/site-packages/follow_traj
+[3.908s] byte-compiling /home/nvidia/vcii/hezi_ros2/install/follow_traj/lib/python3.8/site-packages/follow_traj/simulator_node.py to simulator_node.cpython-38.pyc
+[3.909s] byte-compiling /home/nvidia/vcii/hezi_ros2/install/follow_traj/lib/python3.8/site-packages/follow_traj/mpc_node.py to mpc_node.cpython-38.pyc
+[3.910s] byte-compiling /home/nvidia/vcii/hezi_ros2/install/follow_traj/lib/python3.8/site-packages/follow_traj/__init__.py to __init__.cpython-38.pyc
+[3.910s] byte-compiling /home/nvidia/vcii/hezi_ros2/install/follow_traj/lib/python3.8/site-packages/follow_traj/my.py to my.cpython-38.pyc
+[3.915s] running install_data
+[3.916s] running install_egg_info
+[3.920s] Copying ../../../build/follow_traj/follow_traj.egg-info to /home/nvidia/vcii/hezi_ros2/install/follow_traj/lib/python3.8/site-packages/follow_traj-0.0.0-py3.8.egg-info
+[3.921s] running install_scripts
+[3.948s] Installing mpc_node script to /home/nvidia/vcii/hezi_ros2/install/follow_traj/lib/follow_traj
+[3.948s] Installing simulator_node script to /home/nvidia/vcii/hezi_ros2/install/follow_traj/lib/follow_traj
+[3.949s] writing list of installed files to '/home/nvidia/vcii/hezi_ros2/build/follow_traj/install.log'
+[4.270s] Invoked command in '/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj' returned '0': PYTHONPATH=/home/nvidia/vcii/hezi_ros2/build/follow_traj/prefix_override:/home/nvidia/vcii/hezi_ros2/install/follow_traj/lib/python3.8/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base ../../../build/follow_traj build --build-base /home/nvidia/vcii/hezi_ros2/build/follow_traj/build install --record /home/nvidia/vcii/hezi_ros2/build/follow_traj/install.log --single-version-externally-managed

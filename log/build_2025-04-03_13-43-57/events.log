@@ -1,0 +1,61 @@
+[0.000000] (-) TimerEvent: {}
+[0.001660] (-) JobUnselected: {'identifier': 'follow_traj'}
+[0.001834] (-) JobUnselected: {'identifier': 'follow_traj_wd'}
+[0.001883] (follow_traj_re) JobQueued: {'identifier': 'follow_traj_re', 'dependencies': OrderedDict()}
+[0.001925] (follow_traj_re) JobStarted: {'identifier': 'follow_traj_re'}
+[0.098769] (-) TimerEvent: {}
+[0.200102] (-) TimerEvent: {}
+[0.301990] (-) TimerEvent: {}
+[0.403671] (-) TimerEvent: {}
+[0.504993] (-) TimerEvent: {}
+[0.605811] (-) TimerEvent: {}
+[0.706542] (-) TimerEvent: {}
+[0.807095] (-) TimerEvent: {}
+[0.907713] (-) TimerEvent: {}
+[1.008354] (-) TimerEvent: {}
+[1.109196] (-) TimerEvent: {}
+[1.209951] (-) TimerEvent: {}
+[1.310550] (-) TimerEvent: {}
+[1.411143] (-) TimerEvent: {}
+[1.511755] (-) TimerEvent: {}
+[1.612304] (-) TimerEvent: {}
+[1.712962] (-) TimerEvent: {}
+[1.766012] (follow_traj_re) Command: {'cmd': ['/usr/bin/python3', 'setup.py', 'egg_info', '--egg-base', '../../../build/follow_traj_re', 'build', '--build-base', '/home/nvidia/vcii/hezi_ros2/build/follow_traj_re/build', 'install', '--record', '/home/nvidia/vcii/hezi_ros2/build/follow_traj_re/install.log', '--single-version-externally-managed'], 'cwd': '/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_re', 'env': {'GJS_DEBUG_TOPICS': 'JS ERROR;JS LOG', 'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'nvidia', 'LC_TIME': 'zh_CN.UTF-8', 'SSH_AGENT_PID': '2809', 'XDG_SESSION_TYPE': 'x11', 'GIT_ASKPASS': '/usr/share/code/resources/app/extensions/git/dist/askpass.sh', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/usr/local/cuda-11.4/lib64:/opt/ros/foxy/opt/yaml_cpp_vendor/lib:/opt/ros/foxy/opt/rviz_ogre_vendor/lib:/opt/ros/foxy/lib/aarch64-linux-gnu:/opt/ros/foxy/lib:/usr/local/cuda-11.4/lib64:', 'HOME': '/home/nvidia', 'CHROME_DESKTOP': 'code-url-handler.desktop', 'TERM_PROGRAM_VERSION': '1.92.1', 'DESKTOP_SESSION': 'ubuntu', 'JETSON_L4T': '35.4.1', 'GIO_LAUNCHED_DESKTOP_FILE': '/usr/share/applications/code.desktop', 'ROS_PYTHON_VERSION': '3', 'GNOME_SHELL_SESSION_MODE': 'ubuntu', 'GTK_MODULES': 'gail:atk-bridge', 'JETSON_MODEL': 'Jetson AGX Orin Developer Kit', 'VSCODE_GIT_ASKPASS_MAIN': '/usr/share/code/resources/app/extensions/git/dist/askpass-main.js', 'LC_MONETARY': 'zh_CN.UTF-8', 'VSCODE_GIT_ASKPASS_NODE': '/usr/share/code/code', 'MANAGERPID': '2637', 'PYDEVD_DISABLE_FILE_VALIDATION': '1', 'BUNDLED_DEBUGPY_PATH': '/home/nvidia/.vscode/extensions/ms-python.debugpy-2025.4.1-linux-arm64/bundled/libs/debugpy', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'GIO_LAUNCHED_DESKTOP_FILE_PID': '3424', 'IM_CONFIG_PHASE': '1', 'COLCON_PREFIX_PATH': '/home/nvidia/vcii/hezi_ros2/install', 'ROS_DISTRO': 'foxy', 'LOGNAME': 'nvidia', 'JETSON_MODULE': 'NVIDIA Jetson AGX Orin (64GB ram)', 'JETSON_SERIAL_NUMBER': '1421524312429', 'JOURNAL_STREAM': '8:55802', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'JETSON_CODENAME': 'Concord', 'XDG_SESSION_CLASS': 'user', 'USERNAME': 'nvidia', 'TERM': 'xterm-256color', 'GNOME_DESKTOP_SESSION_ID': 'this-is-deprecated', 'ROS_LOCALHOST_ONLY': '0', 'WINDOWPATH': '2', 'PATH': '/home/nvidia/vcii/hezi_ros2/install/follow_traj/bin:/usr/local/cuda-11.4/bin:/home/nvidia/.local/bin:/opt/ros/foxy/bin:/usr/local/cuda-11.4/bin:/home/nvidia/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/nvidia/.vscode/extensions/ms-python.debugpy-2025.4.1-linux-arm64/bundled/scripts/noConfigScripts', 'SESSION_MANAGER': 'local/EAORA07A:@/tmp/.ICE-unix/2844,unix/EAORA07A:/tmp/.ICE-unix/2844', 'INVOCATION_ID': '44574bfb9a06482fa3b26232f709ac53', 'XDG_MENU_PREFIX': 'gnome-', 'LC_ADDRESS': 'zh_CN.UTF-8', 'XDG_RUNTIME_DIR': '/run/user/1000', 'GDK_BACKEND': 'x11', 'DISPLAY': ':1', 'VSCODE_DEBUGPY_ADAPTER_ENDPOINTS': '/home/nvidia/.vscode/extensions/ms-python.debugpy-2025.4.1-linux-arm64/.noConfigDebugAdapterEndpoints/endpoint-3415e97e99964347.txt', 'LANG': 'en_US.UTF-8', 'XDG_CURRENT_DESKTOP': 'Unity', 'LC_TELEPHONE': 'zh_CN.UTF-8', 'XMODIFIERS': '@im=ibus', 'XDG_SESSION_DESKTOP': 'ubuntu', 'XAUTHORITY': '/run/user/1000/gdm/Xauthority', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:', 'JETSON_SOC': 'tegra23x', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-a4197e33d5.sock', 'TERM_PROGRAM': 'vscode', 'SSH_AUTH_SOCK': '/run/user/1000/keyring/ssh', 'AMENT_PREFIX_PATH': '/home/nvidia/vcii/hezi_ros2/install/follow_traj_wd:/home/nvidia/vcii/hezi_ros2/install/follow_traj_re:/home/nvidia/vcii/hezi_ros2/install/follow_traj:/opt/ros/foxy', 'ORIGINAL_XDG_CURRENT_DESKTOP': 'ubuntu:GNOME', 'SHELL': '/bin/bash', 'LC_NAME': 'zh_CN.UTF-8', 'QT_ACCESSIBILITY': '1', 'GDMSESSION': 'ubuntu', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'LC_MEASUREMENT': 'zh_CN.UTF-8', 'GPG_AGENT_INFO': '/run/user/1000/gnupg/S.gpg-agent:0:1', 'GJS_DEBUG_OUTPUT': 'stderr', 'LC_IDENTIFICATION': 'zh_CN.UTF-8', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'QT_IM_MODULE': 'ibus', 'JETSON_CUDA_ARCH_BIN': '8.7', 'PWD': '/home/nvidia/vcii/hezi_ros2/build/follow_traj_re', 'LC_ALL': 'en_US.UTF-8', 'XDG_CONFIG_DIRS': '/etc/xdg/xdg-ubuntu:/etc/xdg', 'XDG_DATA_DIRS': '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/nvidia/vcii/hezi_ros2/build/follow_traj_re/prefix_override:/home/nvidia/vcii/hezi_ros2/install/follow_traj_re/lib/python3.8/site-packages:/home/nvidia/vcii/hezi_ros2/install/follow_traj_wd/lib/python3.8/site-packages:/home/nvidia/vcii/hezi_ros2/install/follow_traj_re/lib/python3.8/site-packages:/home/nvidia/vcii/hezi_ros2/install/follow_traj/lib/python3.8/site-packages:/opt/ros/foxy/lib/python3.8/site-packages', 'LC_NUMERIC': 'zh_CN.UTF-8', 'LC_PAPER': 'zh_CN.UTF-8', 'COLCON': '1', 'JETSON_JETPACK': '5.1.2', 'JETSON_P_NUMBER': 'p3701-0005'}, 'shell': False}
+[1.813150] (-) TimerEvent: {}
+[1.913890] (-) TimerEvent: {}
+[2.014589] (-) TimerEvent: {}
+[2.115277] (-) TimerEvent: {}
+[2.125579] (follow_traj_re) StdoutLine: {'line': b'running egg_info\n'}
+[2.126683] (follow_traj_re) StdoutLine: {'line': b'writing ../../../build/follow_traj_re/follow_traj_re.egg-info/PKG-INFO\n'}
+[2.127181] (follow_traj_re) StdoutLine: {'line': b'writing dependency_links to ../../../build/follow_traj_re/follow_traj_re.egg-info/dependency_links.txt\n'}
+[2.127503] (follow_traj_re) StdoutLine: {'line': b'writing entry points to ../../../build/follow_traj_re/follow_traj_re.egg-info/entry_points.txt\n'}
+[2.127742] (follow_traj_re) StdoutLine: {'line': b'writing requirements to ../../../build/follow_traj_re/follow_traj_re.egg-info/requires.txt\n'}
+[2.127900] (follow_traj_re) StdoutLine: {'line': b'writing top-level names to ../../../build/follow_traj_re/follow_traj_re.egg-info/top_level.txt\n'}
+[2.175560] (follow_traj_re) StdoutLine: {'line': b"reading manifest file '../../../build/follow_traj_re/follow_traj_re.egg-info/SOURCES.txt'\n"}
+[2.177091] (follow_traj_re) StdoutLine: {'line': b"writing manifest file '../../../build/follow_traj_re/follow_traj_re.egg-info/SOURCES.txt'\n"}
+[2.177767] (follow_traj_re) StdoutLine: {'line': b'running build\n'}
+[2.178136] (follow_traj_re) StdoutLine: {'line': b'running build_py\n'}
+[2.178300] (follow_traj_re) StdoutLine: {'line': b'copying follow_traj_re/can_node.py -> /home/nvidia/vcii/hezi_ros2/build/follow_traj_re/build/lib/follow_traj_re\n'}
+[2.178422] (follow_traj_re) StdoutLine: {'line': b'copying follow_traj_re/mpc_node.py -> /home/nvidia/vcii/hezi_ros2/build/follow_traj_re/build/lib/follow_traj_re\n'}
+[2.178687] (follow_traj_re) StdoutLine: {'line': b'running install\n'}
+[2.180089] (follow_traj_re) StdoutLine: {'line': b'running install_lib\n'}
+[2.181681] (follow_traj_re) StdoutLine: {'line': b'copying /home/nvidia/vcii/hezi_ros2/build/follow_traj_re/build/lib/follow_traj_re/can_node.py -> /home/nvidia/vcii/hezi_ros2/install/follow_traj_re/lib/python3.8/site-packages/follow_traj_re\n'}
+[2.182035] (follow_traj_re) StdoutLine: {'line': b'copying /home/nvidia/vcii/hezi_ros2/build/follow_traj_re/build/lib/follow_traj_re/mpc_node.py -> /home/nvidia/vcii/hezi_ros2/install/follow_traj_re/lib/python3.8/site-packages/follow_traj_re\n'}
+[2.183138] (follow_traj_re) StdoutLine: {'line': b'byte-compiling /home/nvidia/vcii/hezi_ros2/install/follow_traj_re/lib/python3.8/site-packages/follow_traj_re/can_node.py to can_node.cpython-38.pyc\n'}
+[2.185828] (follow_traj_re) StdoutLine: {'line': b'byte-compiling /home/nvidia/vcii/hezi_ros2/install/follow_traj_re/lib/python3.8/site-packages/follow_traj_re/mpc_node.py to mpc_node.cpython-38.pyc\n'}
+[2.187207] (follow_traj_re) StdoutLine: {'line': b'running install_data\n'}
+[2.188186] (follow_traj_re) StdoutLine: {'line': b'running install_egg_info\n'}
+[2.191515] (follow_traj_re) StdoutLine: {'line': b"removing '/home/nvidia/vcii/hezi_ros2/install/follow_traj_re/lib/python3.8/site-packages/follow_traj_re-0.0.0-py3.8.egg-info' (and everything under it)\n"}
+[2.192100] (follow_traj_re) StdoutLine: {'line': b'Copying ../../../build/follow_traj_re/follow_traj_re.egg-info to /home/nvidia/vcii/hezi_ros2/install/follow_traj_re/lib/python3.8/site-packages/follow_traj_re-0.0.0-py3.8.egg-info\n'}
+[2.193570] (follow_traj_re) StdoutLine: {'line': b'running install_scripts\n'}
+[2.215351] (-) TimerEvent: {}
+[2.220082] (follow_traj_re) StdoutLine: {'line': b'Installing can_node script to /home/nvidia/vcii/hezi_ros2/install/follow_traj_re/lib/follow_traj_re\n'}
+[2.220567] (follow_traj_re) StdoutLine: {'line': b'Installing follow_node script to /home/nvidia/vcii/hezi_ros2/install/follow_traj_re/lib/follow_traj_re\n'}
+[2.220983] (follow_traj_re) StdoutLine: {'line': b'Installing follow_node_v2 script to /home/nvidia/vcii/hezi_ros2/install/follow_traj_re/lib/follow_traj_re\n'}
+[2.221450] (follow_traj_re) StdoutLine: {'line': b"writing list of installed files to '/home/nvidia/vcii/hezi_ros2/build/follow_traj_re/install.log'\n"}
+[2.279046] (follow_traj_re) CommandEnded: {'returncode': 0}
+[2.315712] (-) TimerEvent: {}
+[2.416730] (-) TimerEvent: {}
+[2.518251] (-) TimerEvent: {}
+[2.531552] (follow_traj_re) JobEnded: {'identifier': 'follow_traj_re', 'rc': 0}
+[2.533681] (-) EventReactorShutdown: {}

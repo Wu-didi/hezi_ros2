@@ -1,0 +1,5 @@
+  File "/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/python3.8/site-packages/follow_traj_wd/follow_node.py", line 130
+    continue
+    ^
+SyntaxError: 'continue' not properly in loop
+
