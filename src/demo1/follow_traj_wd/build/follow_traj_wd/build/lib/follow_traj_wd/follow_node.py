@@ -10,6 +10,7 @@ from can_use import ISGSpeedFilter
 from can_use import Can_use
 import logging
 from geometry_msgs.msg import PoseArray
+from std_msgs.msg import String
 import math
 import csv  
 from pyproj import Proj
@@ -70,6 +71,15 @@ class FollowNode(Node):
             self.trajectory_callback,
             10
         )
+        
+                # 订阅到轨迹
+        self.reduce_speed = self.create_subscription(
+            String,
+            'obstacle_reduce_speed',
+            self.obstacle_reduce_speed_callback,
+            10
+        )
+        
         # 用于存储转换后的轨迹点数据 [[x, y, heading], ...]
         self.traj_data = []
         
@@ -78,14 +88,15 @@ class FollowNode(Node):
         self.mode_666 = 1
         self.eps_subscription
         self.vs_subscription  # prevent unused variable warning
+        self.obstacle_reduce_speed = False
         
         
-        # 读取 CSV 初始轨迹
-        csv_file_path = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_lane_change_right_0404.csv'
-        self.main_traj_data = read_csv(csv_file_path)
+        # # 读取 CSV 初始轨迹
+        # csv_file_path = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_lane_change_right_0404.csv'
+        # self.main_traj_data = read_csv(csv_file_path)
 
-        csv_file_path = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_lane_change_right_0404.csv'
-        self.second_traj_data = read_csv(csv_file_path)
+        # csv_file_path = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_lane_change_right_0404.csv'
+        # self.second_traj_data = read_csv(csv_file_path)
 
 
         self.follower = VehicleTrajectoryFollower()
@@ -100,8 +111,8 @@ class FollowNode(Node):
         if self.latest_eps_mode is None:
             self.get_logger().warn("尚未接收到eps_mode，跳过一次控制")
             return
-        self.get_logger().info(f"[vs_callback] Received state: {msg.data}")
-        self.get_logger().info(f"[vs_callback] EPS mode: {self.latest_eps_mode}")
+        # self.get_logger().info(f"[vs_callback] Received state: {msg.data}")
+        # self.get_logger().info(f"[vs_callback] EPS mode: {self.latest_eps_mode}")
         eps_mode = self.latest_eps_mode
         start = time.time()
         for i in range(20):
@@ -126,21 +137,27 @@ class FollowNode(Node):
                 turn_angle = self.follower.calculate_turn_angle(
                     (ego_lat, ego_lon, ego_yaw), ego_yaw)
                 if turn_angle == "no_current_trajectory":
-                    self.get_logger().info(f"no_current_trajectory")
+                    self.get_logger().info(f"没有轨迹 or 轨迹不可通行，需要停车")
+                    # 需要紧急停车
+                    self.frame = [float(0),    # 分别是期望速度、角度、减速度等级
+                                float(0), 
+                                float(-3)]
                 else:
                     filtered_angle = self.filter.update_speed(turn_angle)
                     desired_speed, desired_acc = self.follower.calculate_speedAndacc(
-                            turn_angle, (ego_lat, ego_lon, ego_yaw), ego_v, is_obstacle = False)
-                    logging.info(f'trun angle: {turn_angle}, filter angle: {filtered_angle}')
+                            turn_angle, (ego_lat, ego_lon, ego_yaw), ego_v, is_obstacle = self.obstacle_reduce_speed)
+                    # logging.info(f'trun angle: {turn_angle}, filter angle: {filtered_angle}')
                     self.frame = [float(desired_speed), 
                                 float(filtered_angle), 
                                 float(desired_acc)]
-                    planner_frame = Float32MultiArray()
-                    planner_frame.data = self.frame
-                    self.get_logger().info(f"[vs_callback] Send frame: {planner_frame.data}")
-                    self.publisher_.publish(planner_frame)
+                    
+                    
+                planner_frame = Float32MultiArray()
+                planner_frame.data = self.frame
+                # self.get_logger().info(f"[vs_callback] Send frame: {planner_frame.data}")
+                self.publisher_.publish(planner_frame)
         elapsed_time = time.time() - start
-        self.get_logger().info(f"calc time:{elapsed_time:.6f} [sec]")
+        # self.get_logger().info(f"calc time:{elapsed_time:.6f} [sec]")
 
     def trajectory_callback(self, msg: PoseArray):
         """
@@ -148,30 +165,38 @@ class FollowNode(Node):
         [[x_utm, y_utm, heading], [x_utm, y_utm, heading], ...]
         """
         traj_data = []
-        for pose in msg.poses:
-            x = pose.position.x
-            y = pose.position.y
+        # 为空，表示没有轨迹或者轨迹不可用，需要停止
+        if len(msg.poses) == 0:
+            print("len of msg.poses: " , len(msg.poses))
+            self.follower.current_trajectory = None
+        else:
+            for pose in msg.poses:
+                x = pose.position.x
+                y = pose.position.y
+                
+                # 提取四元数 (只关心 z, w，假设 x=y=0)
+                qz = pose.orientation.z
+                qw = pose.orientation.w
+                
+                # 反向获取 yaw（弧度）
+                yaw_rad = 2.0 * math.atan2(qz, qw)
+                # 将弧度转为度数
+                heading_deg = math.degrees(yaw_rad)
+                # 归一化到 [0, 360)
+                heading_deg = (heading_deg + 360) % 360
+                traj_data.append([x, y, heading_deg])
+                
+            # 更新最新的轨迹
+            self.follower.current_trajectory = traj_data
+
+    def obstacle_reduce_speed_callback(self, msg):
+        data = str(msg.data)
+        if data == 'Yes':
+            self.obstacle_reduce_speed = True
+        else:
+            self.obstacle_reduce_speed = False
+        self.get_logger().info(f"是否因为障碍物减速：{data}")
             
-            # 提取四元数 (只关心 z, w，假设 x=y=0)
-            qz = pose.orientation.z
-            qw = pose.orientation.w
-            
-            # 反向获取 yaw（弧度）
-            yaw_rad = 2.0 * math.atan2(qz, qw)
-            
-            # 将弧度转为度数
-            heading_deg = math.degrees(yaw_rad)
-            
-            # 归一化到 [0, 360)
-            heading_deg = (heading_deg + 360) % 360
-            
-            traj_data.append([x, y, heading_deg])
-            
-            # 这里用 self.traj_data 保存最新的轨迹
-        self.traj_data = traj_data
-        self.follower.current_trajectory = self.traj_data
-        # 也可以在这里进行后续处理，如可调用其他函数、做可视化、或记录日志等
-        self.get_logger().info(f'Received trajectory with {len(self.traj_data)} points.')
 
 def main(args=None):
     main_trajectory_csv = '/home/renth/follow/collect_trajectory/processed_shiyanzhongxin_0327.csv'

@@ -308,6 +308,7 @@ class AdjustTrajectory:
             # 两条轨迹都不安全，设置停车标志
             print("主轨迹和备选轨迹都被阻塞，车辆需要停止")
             self.should_stop = True
+            self.current_trajectory = None
         elif not self.is_using_alternate and not main_safe and alternate_safe:
             # 主轨迹不安全，备选轨迹安全，切换到备选轨迹
             print("轨迹不安全，备选轨迹安全，切换到备选轨迹")

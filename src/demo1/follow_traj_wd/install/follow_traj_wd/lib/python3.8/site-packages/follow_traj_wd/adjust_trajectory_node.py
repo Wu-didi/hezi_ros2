@@ -71,6 +71,7 @@ class TrajectoryPublisher(Node):
 
         # 发布轨迹的话题
         self.trajectory_pub_ = self.create_publisher(PoseArray, 'trajectory', 10)
+        self.obstacle_flag_pub_ = self.create_publisher(String, 'obstacle_reduce_speed', 1)
 
         # 订阅障碍物检测结果
         self.obstacle_image_sub_ = self.create_subscription(
@@ -86,6 +87,7 @@ class TrajectoryPublisher(Node):
             String,
             'detection_results',
             self.parser_lidar_detection_results,
+            # self.obstacle_callback,
             10
         )
         
@@ -121,21 +123,26 @@ class TrajectoryPublisher(Node):
         pose_array_msg = PoseArray()
         pose_array_msg.header.stamp = self.get_clock().now().to_msg()
         pose_array_msg.header.frame_id = 'map'
+        
+        # 判断是否为None,如果为None,表示没有轨迹了，发一个空的pose_array_msg
+        if traj_data is not None:
+            for x_utm, y_utm, heading_deg in traj_data:
+                pose = Pose()
+                pose.position.x = float(x_utm)
+                pose.position.y = float(y_utm)
+                pose.position.z = 0.0
 
-        for x_utm, y_utm, heading_deg in traj_data:
-            pose = Pose()
-            pose.position.x = float(x_utm)
-            pose.position.y = float(y_utm)
-            pose.position.z = 0.0
+                # 将度数转换为弧度
+                heading_rad = math.radians(heading_deg)
+                qz = math.sin(heading_rad / 2.0)
+                qw = math.cos(heading_rad / 2.0)
+                pose.orientation.z = qz
+                pose.orientation.w = qw
 
-            # 将度数转换为弧度
-            heading_rad = math.radians(heading_deg)
-            qz = math.sin(heading_rad / 2.0)
-            qw = math.cos(heading_rad / 2.0)
-            pose.orientation.z = qz
-            pose.orientation.w = qw
-
-            pose_array_msg.poses.append(pose)
+                pose_array_msg.poses.append(pose)
+                
+        else:
+            self.get_logger().info('Published an empty trajectory (no more path).')
 
         self.trajectory_pub_.publish(pose_array_msg)
 
@@ -147,14 +154,18 @@ class TrajectoryPublisher(Node):
         """
         # obstacle_list = self.parser_image_detection_results(msg)
         obstacle_list = self.parser_rule_lidar_detection_results(msg)
+        # obstacle_list = self.parser_lidar_detection_results(msg)
         # 判断是否有障碍物
         if len(obstacle_list) == 0:
             # 如果订阅内容为空字符串，或特定关键词表示“无障碍物”
             # 则发布“原始轨迹”即可
-            # self.publish_trajectory(self.traj_data)
+            self.obstacle_flag_pub_.publish(String(data="No"))
+            self.traj_data = self.follower.current_trajectory
+            self.publish_trajectory(self.traj_data)
             self.get_logger().info('No obstacle detected, published original trajectory.')
         else:
             # 这里说明有障碍物信息，则调用调整轨迹
+            self.obstacle_flag_pub_.publish(String(data="Yes"))
             self.adjust_trajectory(obstacle_list)
             self.publish_trajectory(self.traj_data)
             self.get_logger().info('Obstacle detected, published adjusted trajectory.')
@@ -236,17 +247,17 @@ class TrajectoryPublisher(Node):
             self.can_use.read_ins_info()
             
         data_str = msg.data
-        self.get_logger().info(f"收到原始消息:\n{data_str}")
+        # self.get_logger().info(f"收到原始消息:\n{data_str}")
 
         # 先解析出有多少个 box（可选，如果你需要此信息）
         first_line_pattern = r'检测到\s+(\d+)\s+个box'
         first_line_match = re.search(first_line_pattern, data_str)
         if not first_line_match:
-            self.get_logger().warn("未能解析到有效的box数量，检查字符串格式。")
+            # self.get_logger().warn("未能解析到有效的box数量，检查字符串格式。")
             return
         
         num_boxes = int(first_line_match.group(1))
-        self.get_logger().info(f"解析到 box 数量: {num_boxes}")
+        # self.get_logger().info(f"解析到 box 数量: {num_boxes}")
 
         # 正则匹配每行内容：形如
         #   [i]: x=..., y=..., z=..., w=..., l=..., h=..., theta=..., score=..., label=...
@@ -280,14 +291,14 @@ class TrajectoryPublisher(Node):
             idx, x_str, y_str, z_str, w_str, l_str, h_str, theta_str, score_str, label_str = match
             
             # 减4是为了做一个偏移量，原车标定不准
-            obstacle_x, obstacle_y = float(x_str) - 4, float(y_str)
-            if obstacle_x < 10:
+            obstacle_x, obstacle_y = float(x_str) - 4, -float(y_str)
+            if obstacle_x < 10 and abs(obstacle_y) < 2:
                 obstacle_x_utm, obstacle_y_utm = obstacle_position(
                     self.can_use.ego_lat, self.can_use.ego_lon, self.can_use.ego_yaw, obstacle_x, obstacle_y
                 )
                 obstacles_memoryBank.append([obstacle_x_utm, obstacle_y_utm])
                 obstacles_list_xy.append([obstacle_x,obstacle_y])
-            
+        self.get_logger().info(f"youxiao {str(obstacles_list_xy)}")
     
         return obstacles_memoryBank
     
@@ -304,13 +315,13 @@ class TrajectoryPublisher(Node):
             self.can_use.read_ins_info()
             
         data_str = msg.data.strip()
-        self.get_logger().info(f"收到原始消息:\n{data_str}")
+        # self.get_logger().info(f"收到原始消息:\n{data_str}")
 
 
         if data_str.endswith(";"):
             data_str = data_str[:-1]
         data_str = data_str.split(":")[-1]
-        print("data_str:",data_str)
+        # print("data_str:",data_str)
         # 用分号把box切分开
         # data_str.split(';') -> ["x,y,z,w,l,h,yaw", "x,y,z,w,l,h,yaw", ...]
         box_str_list = data_str.split(';')
@@ -332,7 +343,7 @@ class TrajectoryPublisher(Node):
                 obstacle_y = -float(fields[1])
                 
                 # 超过10m的直接放弃
-                if obstacle_x < 10:
+                if obstacle_x < 20 and abs(obstacle_y) < 2:
                     obstacle_detected = True
                     
                     obstacle_x_utm, obstacle_y_utm = obstacle_position(
@@ -350,8 +361,7 @@ class TrajectoryPublisher(Node):
             return obstacles_memoryBank
         else:
             return []
-
-    
+  
     def adjust_trajectory(self, obstcle):
         
         # 在这里也可以做一些判断

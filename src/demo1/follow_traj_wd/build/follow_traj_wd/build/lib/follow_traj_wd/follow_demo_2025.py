@@ -99,8 +99,6 @@ class VehicleTrajectoryFollower:
         self.far_index = 25  # 远处的目标点，用于控制速度
         self.control_speed_the = 30 #用於判斷遠處目標點和當前head的差值是否超過該值，然後進行速度的處理
     
-    
-
     def calculate_bearing(self, lat1, lon1, lat2, lon2):
         dLon = math.radians(lon2 - lon1)
         lat1 = math.radians(lat1)
@@ -256,17 +254,20 @@ class VehicleTrajectoryFollower:
         return turn_angle
 
     # 计算期望速度和加速度
-    def calculate_speedAndacc(self, turn_angle, current_position, current_speed, is_obstacle = False, points_num_threshold=20):
+    def calculate_speedAndacc(self, turn_angle, current_position, current_speed, is_obstacle = False, points_num_threshold=20,
+                              high_speed = 30,
+                              low_speed = 5):
         if current_speed < 1:
-            speed = 20
+            speed = high_speed
             acc = 0
             return speed, acc
+        
         if abs(turn_angle) >= 50:
             if current_speed >= 15:
-                speed = 10
+                speed = low_speed
                 acc = -2
             else:
-                speed = 10
+                speed = low_speed
                 acc = 0
             return speed, acc 
         
@@ -290,22 +291,22 @@ class VehicleTrajectoryFollower:
         if abs(far_turn_angle) >= 40:
             print("=_="*30)
             if current_speed >= 15:
-                speed = 10
+                speed = low_speed
                 acc = -1
             else:
-                speed = 10
+                speed = low_speed
                 acc = 0
         else:
-            speed = 20
+            speed = high_speed
             acc = 0
         
         if is_obstacle:
             print("find obstacle reduce speed")
-            if current_speed >= 15:
-                speed = 10
+            if current_speed >= low_speed+5:
+                speed = low_speed
                 acc = -3
             else:
-                speed = 10
+                speed = low_speed
                 acc = 0
         return speed, acc    
 

@@ -45,13 +45,13 @@ class Can_use:
             INS_Longitude = (can_data[4] << 24) | (can_data[5] << 16) | (can_data[6] << 8) | can_data[7]
             INS_Latitude = INS_Latitude * 0.0000001 - 180
             INS_Longitude = INS_Longitude * 0.0000001 - 180
-            print(f"INS_Latitude:{INS_Latitude},INS_Longitude:{INS_Longitude}")
+            # print(f"INS_Latitude:{INS_Latitude},INS_Longitude:{INS_Longitude}")
 
             ego_x = INS_Longitude
             ego_y = INS_Latitude
             self.ego_lon = ego_x
             self.ego_lat = ego_y
-            logging.info(f"ego_x:{ego_x},ego_y:{ego_y}")
+            # logging.info(f"ego_x:{ego_x},ego_y:{ego_y}")
 
         if message_ins is not None and message_ins.arbitration_id == 0x505:
             speed_data = message_ins.data
@@ -117,8 +117,8 @@ class Can_use:
             # Auto speed cmd（位3-7）
             # 首先对速度进行缩放和偏移
             # 期望速度 单位km/h
-            # desired_speed = action[0] 
-            desired_speed = 3
+            desired_speed = action[0] 
+            # desired_speed = 3
             speed_scaled = int(desired_speed) & 0x1F  # 取5位（位3-7）
             # 组合BYTE0
             byte0 = (speed_scaled << 3) | auto_drive_cmd_bits

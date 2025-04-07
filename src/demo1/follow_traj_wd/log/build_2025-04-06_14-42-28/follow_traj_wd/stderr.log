@@ -1,5 +1,0 @@
-  File "/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/python3.8/site-packages/follow_traj_wd/adjust_trajectory_node.py", line 86
-    10
-    ^
-SyntaxError: invalid syntax
-
