@@ -16,17 +16,17 @@ from can_use import Can_use, ISGSpeedFilter
 import pyproj
 import time 
 
-import logging
-import datetime
+# import logging
+# import datetime
 
-timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
-log_file_name = f"{timestamp}.log"
+# timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+# log_file_name = f"{timestamp}.log"
 
-logging.basicConfig(
-    filename=log_file_name,         # 日志输出到当前目录下的 <时间戳>.log 文件
-    level=logging.INFO,             # 日志级别：INFO 及以上
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
+# logging.basicConfig(
+#     filename=log_file_name,         # 日志输出到当前目录下的 <时间戳>.log 文件
+#     level=logging.INFO,             # 日志级别：INFO 及以上
+#     format="%(asctime)s - %(levelname)s - %(message)s"
+# )
 
 # 车辆参数
 VEHICLE_WIDTH = 1.9   # m
