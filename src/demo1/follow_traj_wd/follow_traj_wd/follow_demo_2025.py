@@ -16,17 +16,17 @@ from can_use import Can_use, ISGSpeedFilter
 import pyproj
 import time 
 
-import logging
-import datetime
+# import logging
+# import datetime
 
-timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
-log_file_name = f"./run_log/{timestamp}.log"
+# timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+# log_file_name = f"./run_log/{timestamp}.log"
 
-logging.basicConfig(
-    filename=log_file_name,         # 日志输出到当前目录下的 <时间戳>.log 文件
-    level=logging.INFO,             # 日志级别：INFO 及以上
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
+# logging.basicConfig(
+#     filename=log_file_name,         # 日志输出到当前目录下的 <时间戳>.log 文件
+#     level=logging.INFO,             # 日志级别：INFO 及以上
+#     format="%(asctime)s - %(levelname)s - %(message)s"
+# )
 
 # 车辆参数
 VEHICLE_WIDTH = 1.9   # m
@@ -96,7 +96,7 @@ class VehicleTrajectoryFollower:
         self.previous_turn_angle = 0
         self.far_previous_turn_angle = 0
         self.max_turn_rate = 6  # 限制每次转向角的最大变化速率（度）
-        self.far_index = 25  # 远处的目标点，用于控制速度
+        self.far_index = 45  # 远处的目标点，用于控制速度
         self.control_speed_the = 30 #用於判斷遠處目標點和當前head的差值是否超過該值，然後進行速度的處理
     
     def calculate_bearing(self, lat1, lon1, lat2, lon2):
@@ -165,7 +165,7 @@ class VehicleTrajectoryFollower:
             max_bound = len(trajectory)-1
         else:
             max_bound = 200
-        print(max(closest_index,0),min(closest_index+max_bound, len(trajectory)-1))
+        # print(max(closest_index,0),min(closest_index+max_bound, len(trajectory)-1))
         for i, (lon, lat, _) in enumerate(trajectory[closest_index:max(closest_index+max_bound,len(trajectory))]):  # 经度在前，纬度在后
             distance = self.calculate_distance(current_lat, current_lon, lat, lon)
             if distance < min_distance:
@@ -223,7 +223,7 @@ class VehicleTrajectoryFollower:
             target_index_obstacle = offset_target_index
         else:
             target_index_obstacle = self.offset_target_index
-        print("==============", target_index_obstacle)
+        # print("==============", target_index_obstacle)
         current_lat, current_lon, _ = current_position
         # 根据后轴的位置和heading调整得到前轴的位置
         front_lat, front_lon = self.adjust_position_to_front_axle(current_lat, current_lon, current_heading)
@@ -265,17 +265,23 @@ class VehicleTrajectoryFollower:
         if abs(turn_angle) >= 50:
             if current_speed >= 15:
                 speed = low_speed
-                acc = -2
+                acc = -1
             else:
                 speed = low_speed
                 acc = 0
             return speed, acc 
         
         current_lat, current_lon, current_heading = current_position
-        next_lon, next_lat, _ = self.current_trajectory[min(self.closest_index + self.far_index, len(self.current_trajectory) - 1)]  # 注意经纬度顺序
+        next_lon, next_lat,  next_heading = self.current_trajectory[min(self.closest_index + self.far_index, len(self.current_trajectory) - 1)]  # 注意经纬度顺序
+        print(f"current_heading: {current_heading}, next_heading: {next_heading}")
         
+        if current_heading <= 0:
+            current_heading += 360
+        diff_heading = abs(current_heading-next_heading)
+        print(f"current_heading: {current_heading}, next_heading: {next_heading}, diff_heading: {diff_heading}")
         # 计算目标点相对当前位置的方位角
         far_desired_heading = self.calculate_bearing(current_lat, current_lon, next_lat, next_lon)
+
         # 计算转向角
         far_turn_angle = (far_desired_heading - current_heading + 360) % 360
         if far_turn_angle > 180:
@@ -287,10 +293,10 @@ class VehicleTrajectoryFollower:
             far_turn_angle = -460
         else:
             far_turn_angle = far_turn_angle * WHEEL_FACTOR    
-
-        if abs(far_turn_angle) >= 40:
-            print("=_="*30)
-            if current_speed >= 15:
+        print("====== far_turn_angle: ",far_turn_angle)
+        if abs(far_turn_angle) >= 30 or diff_heading >=120:
+            print("========================将会发生转弯，减速！减速！减速！=============================")
+            if current_speed >= low_speed+5:
                 speed = low_speed
                 acc = -1
             else:
@@ -342,7 +348,7 @@ class Can_use:
             ego_y = INS_Latitude
             self.ego_lon = ego_x
             self.ego_lat = ego_y
-            logging.info(f"ego_x:{ego_x},ego_y:{ego_y}")
+            # logging.info(f"ego_x:{ego_x},ego_y:{ego_y}")
 
         if message_ins is not None and message_ins.arbitration_id == 0x505:
             speed_data = message_ins.data
@@ -417,7 +423,7 @@ class Can_use:
             # BYTE1-BYTE2（需求方向盘转角）
             # 需要根据具体缩放因子和偏移量进行计算，假设缩放因子为0.1，偏移量为0
             # action[1] = 396
-            logging.info(f"final turn angle:{action[1]}")
+            # logging.info(f"final turn angle:{action[1]}")
             angle_scaled = int((action[1] - (-500)) / 0.1) & 0xFFFF  # 16位
             byte1 = (angle_scaled >> 8) & 0xFF  # 高8位
             byte2 = angle_scaled & 0xFF         # 低8位

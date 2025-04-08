@@ -101,10 +101,11 @@ class TrajectoryPublisher(Node):
         )
 
         # 读取 CSV 初始轨迹
-        csv_file_path = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_lane_change_left_0404.csv'
+        csv_file_path = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_shiyanzhongxin_0327.csv'
         self.main_traj_data = read_csv(csv_file_path)
 
-        csv_file_path = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_lane_change_right_0404.csv'
+        # csv_file_path = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_lane_change_right_0404.csv'
+        csv_file_path = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_shiyanzhongxin_0327.csv'
         self.second_traj_data = read_csv(csv_file_path)
 
         # 首次发布初始轨迹
@@ -114,7 +115,19 @@ class TrajectoryPublisher(Node):
         self.follower = AdjustTrajectory(self.main_traj_data,
                                                   self.second_traj_data)
         self.can_use = Can_use()
-
+        
+        # === 新增：定时器 ===
+        # 周期性发布当前轨迹，无论是否收到障碍物信息
+        self.timer_period = 0.1  # (HZ = 10)
+        self.timer_ = self.create_timer(self.timer_period, self.timer_callback)
+        
+    def timer_callback(self):
+        """
+        定时器回调：每隔 self.timer_period 秒，将 latest trajectory 发布一次
+        """
+        current_traj_data = self.follower.current_trajectory
+        self.publish_trajectory(current_traj_data)
+        
     def publish_trajectory(self, traj_data):
         """
         将轨迹数据（list of [x_utm, y_utm, heading(度数)]）发布为 PoseArray。
@@ -159,15 +172,17 @@ class TrajectoryPublisher(Node):
         if len(obstacle_list) == 0:
             # 如果订阅内容为空字符串，或特定关键词表示“无障碍物”
             # 则发布“原始轨迹”即可
+            # 没有障碍物 -> 发原轨迹
             self.obstacle_flag_pub_.publish(String(data="No"))
-            self.traj_data = self.follower.current_trajectory
-            self.publish_trajectory(self.traj_data)
-            self.get_logger().info('No obstacle detected, published original trajectory.')
+            # self.traj_data = self.follower.current_trajectory
+            # self.publish_trajectory(self.traj_data)
+            self.follower.current_trajectory = self.main_traj_data
+            self.get_logger().info('No obstacle detected, published main trajectory.')
         else:
             # 这里说明有障碍物信息，则调用调整轨迹
             self.obstacle_flag_pub_.publish(String(data="Yes"))
             self.adjust_trajectory(obstacle_list)
-            self.publish_trajectory(self.traj_data)
+            # self.publish_trajectory(self.traj_data) # 统一在定时器里面发布
             self.get_logger().info('Obstacle detected, published adjusted trajectory.')
 
     def parser_image_detection_results(self, msg):
