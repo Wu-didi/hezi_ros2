@@ -15,6 +15,9 @@ follow_traj_wd/can_use.py
 follow_traj_wd/follow_demo_2025.py
 follow_traj_wd/follow_demo_mpc_bank.py
 follow_traj_wd/follow_node.py
+follow_traj_wd/hybrid_follow_node.py
+follow_traj_wd/lane_change.py
+follow_traj_wd/lane_changevx.py
 follow_traj_wd/mpc_node_v2.py
 follow_traj_wd/read_csv.py
 follow_traj_wd/switch_trajectory.py

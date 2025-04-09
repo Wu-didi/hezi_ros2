@@ -314,7 +314,7 @@ class VehicleTrajectoryFollower:
         self.far_index = 45
         # self.cx, self.cy, self.cyaw, self.ck = read_csv(trajectory_csv)
         
-        self.cx, self.cy, self.cyaw, self.ck = None, None, None, None
+        self.cx, self.cy, self.cyaw, self.ck,self.sp = None, None, None, None, None
         # self.cyaw = [one_cyaw-math.radians(95) for one_cyaw in self.cyaw]
         if self.cx is not None:
             self.sp = calc_speed_profile(self.cx, self.cy, self.cyaw, TARGET_SPEED)  # 主要作用是根据给定的路径规划和控制要求，计算一个适合的速度轨迹
@@ -458,7 +458,7 @@ class VehicleTrajectoryFollower:
         ind = temp_ind + 5
         if pind >= ind:
             ind = pind
-        
+        ind = min(len(cx)-1,ind)
         xref[0, 0] = cx[ind]
         xref[1, 0] = cy[ind]
         xref[2, 0] = sp[ind]
@@ -669,7 +669,7 @@ class VehicleTrajectoryFollower:
     
     
     def calculate_speedAndacc(self, turn_angle, current_position, current_speed, is_obstacle = False, points_num_threshold=20,
-                              high_speed = 30,
+                              high_speed = 25,
                               low_speed = 5):
         if current_speed < 1:
             speed = high_speed

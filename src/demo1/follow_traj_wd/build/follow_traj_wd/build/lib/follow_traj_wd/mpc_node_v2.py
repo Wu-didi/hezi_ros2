@@ -96,6 +96,9 @@ class FollowNode(Node):
             new_frame = [float(desired_speed),
                          float(filtered_angle), 
                          float(desired_acc)]     
+            # new_frame = [float(5),
+            #              float(0), 
+            #              float(0)] 
         else:
             self.get_logger().info(f"self.follower.cx is None")
             new_frame = [0.0, 0.0, -3.0]     

@@ -87,18 +87,13 @@ class LaneChangeDecider():
     
     def get_current_observation(self):
         self.obs_list = [
-        [x, y, z, pixel_cx, pixel_cy, pixel_w, pixel_h]
-        for x, y, z, pixel_cx, pixel_cy, pixel_w, pixel_h in self.obs_list]
-        columns = ['x', 'y', 'z', 'pixel_cx', 'pixel_cy', 'pixel_w', 'pixel_h']
+        [x, y]
+        for x, y in self.obs_list]
+        columns = ['x', 'y']
         self.obs_df = pd.DataFrame(self.obs_list, columns=columns)
         self.obs_df['dis'] = self.obs_df['x']**2 + self.obs_df['y']**2
     
     def publish_new_refline(self):
-        det_x = self.state[0] - self.target_point[0]
-        det_y = self.state[1] - self.target_point[1]
-        distance = math.sqrt(det_x ** 2 + det_y ** 2)
-        if (distance < 0.3) self.planning = False
-        
         if len(self.obs_list) == 0:
             print("No obs in the scene")
             self.planning = False
@@ -278,3 +273,10 @@ class LaneChangeDecider():
         curvature = abs(dx * ddy - dy * ddx) / ((dx ** 2 + dy ** 2) ** 1.5)
         
         return angle, curvature
+
+def main(state, obs_list):
+    Decider = LaneChangeDecider('/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_shiyanzhongxin_0327_with_yaw_ck.csv')
+    Decider.init_refline()
+    Decider.update_state(state, obs_list)
+    cx, cy, cyaw, ck, sp = self.decider.publish_new_refline()
+    return cx, cy, cyaw, ck, sp

@@ -150,7 +150,7 @@ def should_ignore_obstacle(current_obstacle, known_obstacles, distance_threshold
     return False  # 否则，不忽略
 
 class AdjustTrajectory:
-    def __init__(self, main_trajectory_csv, alternate_trajectory_csv, target_index=0):
+    def __init__(self, main_trajectory_csv, alternate_trajectory_csv, target_index=0, is_mpc_trajectory=False):
         """
         初始化，读取主轨迹和备选轨迹点
         :param main_trajectory_csv: 包含主轨迹点的CSV文件路径
@@ -186,7 +186,6 @@ class AdjustTrajectory:
         self.current_trajectory = self.main_trajectory.copy()
         self.is_using_alternate = False
 
-
     def calculate_distance(self, lat1, lon1, lat2, lon2):
         R = 6371000  # 地球半径，单位为米
         dLat = math.radians(lat2 - lat1)
@@ -197,15 +196,13 @@ class AdjustTrajectory:
         return distance
     
     # 计算utm坐标点之间的距离
-    def calculate_utm_distance(x1, y1, x2, y2):
+    def calculate_utm_distance(self,x1, y1, x2, y2):
         """
         计算两个 UTM 坐标点之间的欧几里得距离，单位：米
         """
         dx = x2 - x1
         dy = y2 - y1
-        return math.sqrt(dx * dx + dy * dy)
-
-    
+        return math.sqrt(dx * dx + dy * dy) 
     
     def find_closest_point_index_bank(self, current_lat, current_lon, trajectory=None):
         """
@@ -229,8 +226,7 @@ class AdjustTrajectory:
                 min_distance = distance
                 closest_index = i
         return closest_index+self.closest_index
-
-    
+  
     def find_closest_point_index(self, current_lat, current_lon, trajectory=None,is_main=True):
         """
         找到距离当前车辆位置最近的轨迹点索引
@@ -295,8 +291,8 @@ class AdjustTrajectory:
 
         min_distance = float('inf')
         max_bound = len(trajectory)-1
-        for i, (ref_utm_x, ref_utm_y) in enumerate(trajectory):  # 经度在前，纬度在后
-            distance = self.calculate_utm_distance(utm_X, utm_y, ref_utm_x, ref_utm_y)
+        for i, (ref_utm_x, ref_utm_y) in enumerate(zip(trajectory[0],trajectory[1])):  # 经度在前，纬度在后
+            distance = self.calculate_utm_distance(current_lat, current_lon, ref_utm_x, ref_utm_y)
             if distance < min_distance:
                 min_distance = distance
                 closest_index = i
@@ -341,7 +337,7 @@ class AdjustTrajectory:
             obstacle_x, obstacle_y = obstacle[0], obstacle[1]
             closest_point_idx = self.find_utm_closest_point_index_avoid(obstacle_x, obstacle_y, trajectory=trajectory)
             # print(closest_point_idx)
-            traj_point_utm_x, traj_point_utm_y, _ = trajectory[closest_point_idx]
+            traj_point_utm_x, traj_point_utm_y = trajectory[0][closest_point_idx],trajectory[1][closest_point_idx]
             dist_to_closest_point = self.calculate_distance(obstacle_x, obstacle_y, traj_point_utm_x, traj_point_utm_y)
             print("======================distance:===================",dist_to_closest_point)
             if dist_to_closest_point < safe_distance:
