@@ -196,6 +196,16 @@ class AdjustTrajectory:
         distance = R * c
         return distance
     
+    # 计算utm坐标点之间的距离
+    def calculate_utm_distance(x1, y1, x2, y2):
+        """
+        计算两个 UTM 坐标点之间的欧几里得距离，单位：米
+        """
+        dx = x2 - x1
+        dy = y2 - y1
+        return math.sqrt(dx * dx + dy * dy)
+
+    
     
     def find_closest_point_index_bank(self, current_lat, current_lon, trajectory=None):
         """
@@ -271,6 +281,27 @@ class AdjustTrajectory:
                 min_distance = distance
                 closest_index = i
         return closest_index
+
+    def find_utm_closest_point_index_avoid(self, current_lat, current_lon, trajectory=None):
+        """
+        找到距离当前车辆位置最近的轨迹点索引
+        :param current_lat: 车辆当前纬度
+        :param current_lon: 车辆当前经度
+        :param trajectory: 要查找的轨迹，默认使用当前轨迹
+        :return: 距离最近的轨迹点索引
+        """
+        if trajectory is None:
+            trajectory = self.current_trajectory
+
+        min_distance = float('inf')
+        max_bound = len(trajectory)-1
+        for i, (ref_utm_x, ref_utm_y) in enumerate(trajectory):  # 经度在前，纬度在后
+            distance = self.calculate_utm_distance(utm_X, utm_y, ref_utm_x, ref_utm_y)
+            if distance < min_distance:
+                min_distance = distance
+                closest_index = i
+        return closest_index
+
     
     def check_trajectory_safe(self, trajectory, obstacles, safe_distance):
         """
@@ -295,6 +326,28 @@ class AdjustTrajectory:
                 return False
         return True
     
+    def check_utm_trajectory_safe(self, trajectory, obstacles, safe_distance):
+        """
+        检查给定轨迹是否安全
+        :param trajectory: 要检查的轨迹
+        :param obstacles: 障碍物列表
+        :param safe_distance: 安全距离
+        :return: 如果轨迹安全返回 True，否则返回 False
+        """
+        if len(obstacles) == 0:
+            # print("len is 0")
+            return True
+        for obstacle in obstacles:
+            obstacle_x, obstacle_y = obstacle[0], obstacle[1]
+            closest_point_idx = self.find_utm_closest_point_index_avoid(obstacle_x, obstacle_y, trajectory=trajectory)
+            # print(closest_point_idx)
+            traj_point_utm_x, traj_point_utm_y, _ = trajectory[closest_point_idx]
+            dist_to_closest_point = self.calculate_distance(obstacle_x, obstacle_y, traj_point_utm_x, traj_point_utm_y)
+            print("======================distance:===================",dist_to_closest_point)
+            if dist_to_closest_point < safe_distance:
+                return False
+        return True
+    
     def check_and_switch_trajectory(self, obstacles, safe_distance=2):
         """
         检查当前轨迹是否安全，并在必要时进行轨迹切换或停车
@@ -303,6 +356,47 @@ class AdjustTrajectory:
         """
         main_safe = self.check_trajectory_safe(self.main_trajectory, obstacles, safe_distance)
         alternate_safe = self.check_trajectory_safe(self.alternate_trajectory, obstacles, safe_distance)
+        # print(main_safe,alternate_safe)
+        if not main_safe and not alternate_safe:
+            # 两条轨迹都不安全，设置停车标志
+            print("主轨迹和备选轨迹都被阻塞，车辆需要停止")
+            self.should_stop = True
+            self.current_trajectory = None
+        elif not self.is_using_alternate and not main_safe and alternate_safe:
+            # 主轨迹不安全，备选轨迹安全，切换到备选轨迹
+            print("轨迹不安全，备选轨迹安全，切换到备选轨迹")
+            self.switch_to_alternate()
+            self.should_stop = False
+        elif self.is_using_alternate and not alternate_safe and main_safe:
+            # 备选轨迹不安全，主轨迹安全，切换回主轨迹
+            print("备选轨迹不安全，主轨迹安全，切换回主轨迹")
+            self.switch_to_main()
+            self.should_stop = False
+        elif self.is_using_alternate and main_safe and alternate_safe:
+            print("都安全，切换回主轨迹")
+            self.switch_to_main()
+            self.should_stop = False
+        elif not self.is_using_alternate and main_safe:
+            # 继续使用主轨迹
+            print("继续使用主轨迹")
+            self.should_stop = False
+        elif self.is_using_alternate and alternate_safe:
+            # 继续使用备选轨迹
+            print("继续使用备选轨迹")
+            self.should_stop = False
+        else:
+            # 其他情况，保持当前轨迹
+            print("保持轨迹不变")
+            pass
+
+    def check_and_switch_utm_trajectory(self, obstacles, safe_distance=2):
+        """
+        检查当前轨迹是否安全，并在必要时进行轨迹切换或停车
+        :param obstacles: 障碍物的坐标列表，格式为 [[x, y], ...]
+        :param safe_distance: 安全距离
+        """
+        main_safe = self.check_utm_trajectory_safe(self.main_trajectory, obstacles, safe_distance)
+        alternate_safe = self.check_utm_trajectory_safe(self.alternate_trajectory, obstacles, safe_distance)
         # print(main_safe,alternate_safe)
         if not main_safe and not alternate_safe:
             # 两条轨迹都不安全，设置停车标志

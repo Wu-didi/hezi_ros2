@@ -119,7 +119,7 @@ class TrajectoryPublisher(Node):
         self.publish_mpc_trajectory(self.mpc_traj_data)
         
         self.follower = AdjustTrajectory(self.main_traj_data,
-                                                  self.second_traj_data)
+                                        self.second_traj_data)
         
         
         self.can_use = Can_use()
@@ -207,8 +207,6 @@ class TrajectoryPublisher(Node):
 
         self.mpc_trajectory_pub_.publish(pose_array_msg)
 
-
-
     def obstacle_callback(self, msg):
         """
         当订阅到障碍物信息时，决定是否要调用避障逻辑。
@@ -217,6 +215,7 @@ class TrajectoryPublisher(Node):
         """
         # obstacle_list = self.parser_image_detection_results(msg)
         obstacle_list = self.parser_rule_lidar_detection_results(msg)
+        # [[x,y],[x,y]]
         # obstacle_list = self.parser_lidar_detection_results(msg)
         # 判断是否有障碍物
         if len(obstacle_list) == 0:

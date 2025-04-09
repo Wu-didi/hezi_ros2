@@ -46,6 +46,11 @@ class LaneChangeDecider():
         self.state = None
         self.init_refline()
         self.planning = False
+        self.width = 4.0 
+        self.length = 4.0
+        self.InMiddle = True
+        self.InLeft = False
+        self.InRight = False
     
     def smooth_yaw(self, yaw):
         for i in range(len(yaw) - 1):
@@ -89,6 +94,11 @@ class LaneChangeDecider():
         self.obs_df['dis'] = self.obs_df['x']**2 + self.obs_df['y']**2
     
     def publish_new_refline(self):
+        det_x = self.state[0] - self.target_point[0]
+        det_y = self.state[1] - self.target_point[1]
+        distance = math.sqrt(det_x ** 2 + det_y ** 2)
+        if (distance < 0.3) self.planning = False
+        
         if len(self.obs_list) == 0:
             print("No obs in the scene")
             self.planning = False
@@ -101,13 +111,10 @@ class LaneChangeDecider():
             data_cone["utm_coords"] = data_cone.apply(lambda row: self.localxy2utm([row['x'], row['y'], 0, 0], self.state), axis=1)
             data_cone["utm_x"] = data_cone["utm_coords"].apply(lambda x: x[0])
             data_cone["utm_y"] = data_cone["utm_coords"].apply(lambda x: x[1])
-            print("utm_x:", data_cone["utm_x"])
-            print("utm_y:", data_cone["utm_y"])
             data_cone["utm_yaw"] = data_cone["utm_coords"].apply(lambda x: x[2])
             # 画出utm坐标系下的cone
-            plt.scatter(data_cone["utm_x"], data_cone["utm_y"], c="b", linewidth=10, label="Cone utm coords")       
             data_cone = [data_cone.iloc[0]['x'], data_cone.iloc[0]['y'], 
-                         4.0, 4.0]
+                         2.0, 2.0]
             if self.planning == False:
                 self.GenerateLaneBorrow(data_cone)
                 self.planning = True
@@ -141,24 +148,25 @@ class LaneChangeDecider():
    
     # 生成换道部分轨迹
     def GenerateLaneBorrow(self, obs): 
-        print("obs:", obs)
         """lane borrow"""
         # [x, y, width, length]
         if len(obs) == 0:
             return
         index1, index2 = -1, -1
         for i in range(len(self.ref_line)):
-            if index1 == -1 and self.ref_line[i][1] >= obs[1] - obs[3] / 2 - 10:
+            if index1 == -1 and self.ref_line[i][1] >= obs[1] - self.length / 2 - 10:
                 index1 = i
-            if index2 == -1 and self.ref_line[i][1] >= obs[1] + obs[3] / 2 + 10:
+            if index2 == -1 and self.ref_line[i][1] >= obs[1] + self.length / 2 + 10:
                 index2 = i
                 break
         if index1 == -1 or index2 == -1:
             return
         point0 = [self.ref_line[index1][0], self.ref_line[index1][1]]
-        point1 = [obs[0] - obs[2], obs[1] - obs[3] / 2]
-        point2 = [obs[0] - obs[2], obs[1] + obs[3] / 2]
+        point1 = [obs[0] - self.width, obs[1] - self.length / 2]
+        point2 = [obs[0] - self.width, obs[1] + self.length / 2]
         point3 = [self.ref_line[index2][0], self.ref_line[index2][1]]
+
+        self.target_point = localxy2utm(point1, self.state)
 
         b_line1 = self.generate_bezier(point0, point1)
         b_line2 = self.generate_bezier(point1, point2)

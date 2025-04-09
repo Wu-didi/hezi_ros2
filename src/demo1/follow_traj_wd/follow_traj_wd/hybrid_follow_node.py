@@ -43,7 +43,7 @@ def read_csv(csv_file_path):
     return traj_data  
 
 
-class FollowNode(Node):
+class HybridFollowNode(Node):
     def __init__(self):
         super().__init__('Follow_node')
         self.publisher_ = self.create_publisher(
@@ -89,15 +89,7 @@ class FollowNode(Node):
         self.eps_subscription
         self.vs_subscription  # prevent unused variable warning
         self.obstacle_reduce_speed = False
-        
-        
-        # # 读取 CSV 初始轨迹
-        # csv_file_path = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_lane_change_right_0404.csv'
-        # self.main_traj_data = read_csv(csv_file_path)
-
-        # csv_file_path = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_lane_change_right_0404.csv'
-        # self.second_traj_data = read_csv(csv_file_path)
-
+    
 
         self.follower = VehicleTrajectoryFollower()
         self.filter = ISGSpeedFilter()
@@ -208,7 +200,8 @@ class FollowNode(Node):
         else:
             return False
      
-         # 计算未来一段路的曲率
+    
+    # 计算未来一段路的曲率
     def cal_curvature(self,num_point = 20):
         '''返回一段路的曲率'''
         threshold = 0.05

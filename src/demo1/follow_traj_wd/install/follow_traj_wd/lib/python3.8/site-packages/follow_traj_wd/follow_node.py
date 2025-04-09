@@ -220,10 +220,8 @@ class FollowNode(Node):
         return np.mean(sublist)
 
 def main(args=None):
-    main_trajectory_csv = '/home/renth/follow/collect_trajectory/processed_shiyanzhongxin_0327.csv'
-    alternate_trajectory_csv = '/home/renth/follow/collect_trajectory/processed_haima-1119-right.csv'
     rclpy.init(args=args)
-    follow_node = FollowNode(main_trajectory_csv, alternate_trajectory_csv)
+    follow_node = FollowNode()
     rclpy.spin(follow_node)
     FollowNode.destroy_node()
     rclpy.shutdown()
