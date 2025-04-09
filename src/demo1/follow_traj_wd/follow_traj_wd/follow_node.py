@@ -196,7 +196,28 @@ class FollowNode(Node):
         else:
             self.obstacle_reduce_speed = False
         self.get_logger().info(f"是否因为障碍物减速：{data}")
-            
+    
+
+    
+    # 判断是否是弯道
+    def is_curve(self,threshold = 0.5):
+        curvature = cal_curvature()
+        print("mean of k for 20 points : ", np.mean(sublist))
+        if curvature > threshold:
+            return True
+        else:
+            return False
+     
+         # 计算未来一段路的曲率
+    def cal_curvature(self,num_point = 20):
+        '''返回一段路的曲率'''
+        threshold = 0.05
+        # Check if start_index is valid
+        start_index = self.target_ind
+        end_index = min(self.target_ind + 20, len(self.ck))
+        sublist = self.ck[start_index:end_index]
+        sublist = list(map(abs, sublist)) # 统一转为绝对值
+        return np.mean(sublist)
 
 def main(args=None):
     main_trajectory_csv = '/home/renth/follow/collect_trajectory/processed_shiyanzhongxin_0327.csv'

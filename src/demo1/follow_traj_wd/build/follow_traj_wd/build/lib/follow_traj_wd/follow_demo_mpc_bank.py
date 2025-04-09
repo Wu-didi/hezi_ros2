@@ -455,7 +455,7 @@ class VehicleTrajectoryFollower:
 
         temp_ind, _ = self.calc_nearest_index(state, cx, cy, cyaw, 0)
         self.closest_index = temp_ind
-        ind = temp_ind + 4
+        ind = temp_ind + 5
         if pind >= ind:
             ind = pind
         
