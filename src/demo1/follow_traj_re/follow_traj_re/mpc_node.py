@@ -5,7 +5,7 @@ from std_msgs.msg import Int32
 import time
 import sys
 sys.path.append('/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_re/follow_traj_re')
-from mpc_follower import MPCfollower, State
+from mpc_follower_velocity import MPCfollower, State
 from can_use import ISGSpeedFilter
 from can_use import Can_use
 import logging
@@ -45,6 +45,7 @@ class FollowNode(Node):
         self.vs_subscription  # prevent unused variable warning
         self.follower = MPCfollower(main_trajectory_csv)
         self.filter = ISGSpeedFilter()
+        self.speed_filter = ISGSpeedFilter()
         self.latest_eps_mode = None
         self.can_use = Can_use()
         self.planner_frame = Float32MultiArray()
@@ -101,13 +102,17 @@ class FollowNode(Node):
             self.manual_triggered = False
         if self.mode_AE == 1 and self.mode_666 == 1:
             if x is not None and y is not None:
-                acc, turn_angle = self.follower.act(state)
+                velocity, turn_angle = self.follower.act(state)
+                velocity, desired_acc = self.follower.cal_dec()
                 # self.follower.update_target_index(state)
                 filtered_angle = self.filter.update_speed(turn_angle)
+                desired_speed = self.speed_filter.update_speed(velocity)
+                # desired_speed = velocity
+                if (desired_speed > self.follower.max_speed * 3.6): desired_speed = self.follower.max_speed * 3.6
                 # logging.info(f'trun angle: {turn_angle}, filter angle: {filtered_angle}')
-                self.frame = [5.0, 
+                self.frame = [float(desired_speed), 
                               float(filtered_angle), 
-                              0.0]
+                              float(desired_acc)]
                 self.planner_frame.data = self.frame
                 # self.get_logger().info(f"[vs_callback] Send frame: {self.planner_frame.data}")
                 self.publisher_.publish(self.planner_frame)
@@ -117,7 +122,7 @@ class FollowNode(Node):
         # self.get_logger().info(f"Calculation time:{elapsed_time:.6f} [sec]")
 
 def main(args=None):
-    main_trajectory_csv = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_straight12_17_with_yaw_ck.csv'
+    main_trajectory_csv = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_shiyanzhongxin_0327_with_yaw_ck.csv'
     rclpy.init(args=args)
     follow_node = FollowNode(main_trajectory_csv)
     rclpy.spin(follow_node)

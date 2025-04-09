@@ -139,6 +139,7 @@ class LaneChangeDecider():
         new_y = distance * math.sin(angle)
         return new_x, new_y, angle
    
+    # 生成换道部分轨迹
     def GenerateLaneBorrow(self, obs): 
         print("obs:", obs)
         """lane borrow"""

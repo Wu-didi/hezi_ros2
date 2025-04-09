@@ -1,5 +1,6 @@
 /home/nvidia/vcii/hezi_ros2/install/follow_traj_re/lib/python3.8/site-packages/follow_traj_re/read_csv.py
 /home/nvidia/vcii/hezi_ros2/install/follow_traj_re/lib/python3.8/site-packages/follow_traj_re/can_node.py
+/home/nvidia/vcii/hezi_ros2/install/follow_traj_re/lib/python3.8/site-packages/follow_traj_re/mpc_follower_velocity.py
 /home/nvidia/vcii/hezi_ros2/install/follow_traj_re/lib/python3.8/site-packages/follow_traj_re/can_use.py
 /home/nvidia/vcii/hezi_ros2/install/follow_traj_re/lib/python3.8/site-packages/follow_traj_re/lane_change.py
 /home/nvidia/vcii/hezi_ros2/install/follow_traj_re/lib/python3.8/site-packages/follow_traj_re/mpc_node.py
@@ -11,6 +12,7 @@
 /home/nvidia/vcii/hezi_ros2/install/follow_traj_re/lib/python3.8/site-packages/follow_traj_re/send_msg.py
 /home/nvidia/vcii/hezi_ros2/install/follow_traj_re/lib/python3.8/site-packages/follow_traj_re/__pycache__/read_csv.cpython-38.pyc
 /home/nvidia/vcii/hezi_ros2/install/follow_traj_re/lib/python3.8/site-packages/follow_traj_re/__pycache__/can_node.cpython-38.pyc
+/home/nvidia/vcii/hezi_ros2/install/follow_traj_re/lib/python3.8/site-packages/follow_traj_re/__pycache__/mpc_follower_velocity.cpython-38.pyc
 /home/nvidia/vcii/hezi_ros2/install/follow_traj_re/lib/python3.8/site-packages/follow_traj_re/__pycache__/can_use.cpython-38.pyc
 /home/nvidia/vcii/hezi_ros2/install/follow_traj_re/lib/python3.8/site-packages/follow_traj_re/__pycache__/lane_change.cpython-38.pyc
 /home/nvidia/vcii/hezi_ros2/install/follow_traj_re/lib/python3.8/site-packages/follow_traj_re/__pycache__/mpc_node.cpython-38.pyc

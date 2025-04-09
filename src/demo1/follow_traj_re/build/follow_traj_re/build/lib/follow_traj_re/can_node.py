@@ -1,5 +1,5 @@
 import sys
-sys.path.append('/home/nvidia/hezi_ros2/src/demo1/follow_traj_re/follow_traj_re')
+sys.path.append('/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_re/follow_traj_re')
 import rclpy
 from rclpy.node import Node
 from can_use import Can_use, ISGSpeedFilter
@@ -35,7 +35,7 @@ class CanNode(Node):
         self.latest_msg = None
         self.new_frame = [0, 0, 0]
 
-        self.timer = self.create_timer(0.000001, self.timer_callback)
+        self.timer = self.create_timer(0.001, self.timer_callback)
         self.action_timer = self.create_timer(0.005, self.publish_frame)
 
     def timer_callback(self):
@@ -57,7 +57,7 @@ class CanNode(Node):
     def publish_frame(self):
         if self.latest_msg is not None:
             data = self.latest_msg.data
-            self.get_logger().info(f"[publish_frame] Send frame: {data}")
+            # self.get_logger().info(f"[publish_frame] Send frame: {data}")
             if len(data) >= 3:
                 self.new_frame = [data[0], data[1], data[2]]
             else:

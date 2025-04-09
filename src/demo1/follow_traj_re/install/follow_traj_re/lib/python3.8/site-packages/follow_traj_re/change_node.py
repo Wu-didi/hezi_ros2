@@ -4,6 +4,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import rclpy
+import sys
+sys.path.append('/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_re/follow_traj_re')
 from rclpy.node import Node
 from std_msgs.msg import Float32MultiArray, MultiArrayDimension, String
 from lane_change import LaneChangeDecider
@@ -35,7 +37,7 @@ class ChangeNode(Node):
     def __init__(self, path):
         super().__init__('Change_node')
         self.decider = LaneChangeDecider(path)
-        self.can_use = Can_use(zone=49)
+        self.can_use = Can_use()
         self.target_speed = 10.0 / 3.6
         self.cx, self.cy, self.cyaw, self.ck = read_csv(path)
         self.sp = self.decider.calc_speed_profile(self.target_speed)
@@ -48,7 +50,9 @@ class ChangeNode(Node):
         self.decider.init_refline()
         self.planning = False
         # ROS 2 Publisher
-        self.publisher_ = self.create_publisher(Float32MultiArray, 'new_refline', 1)
+        self.publisher_ = self.create_publisher(Float32MultiArray, 
+                                                'new_refline', 
+                                                1)
         self.timer_ = self.create_timer(0.01, self.publish_new_refline)
         self.obs_subscription = self.create_subscription(
             String,
@@ -126,7 +130,7 @@ class ChangeNode(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    lane_change_decider = ChangeNode('/home/renth/follow/collect_trajectory/processed_straight12_17_with_yaw_ck.csv')
+    lane_change_decider = ChangeNode('/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_straight12_17_with_yaw_ck.csv')
     rclpy.spin(lane_change_decider)
     lane_change_decider.destroy_node()
     rclpy.shutdown()

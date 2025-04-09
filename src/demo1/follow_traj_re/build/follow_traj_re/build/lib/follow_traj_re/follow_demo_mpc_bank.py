@@ -10,7 +10,6 @@ import csv
 import numpy as np
 import threading
 import math
-from pynput import keyboard
 import cvxpy
 from can_use import Can_use
 from read_csv import read_csv
@@ -646,122 +645,8 @@ class VehicleTrajectoryFollower:
         return turn_angle
 
 
-def on_press(key):
-    global manual_triggered
-    global stop_record
-    try:
-        if key.char == 's':
-            manual_triggered = True
-            # print("收到键盘输入's'，手动请求自动驾驶模式")
-        if key.char == 'q':
-            manual_triggered = False
-        if key.char == "x":
-            stop_record = True
-    except AttributeError:
-        if key == keyboard.Key.esc:
-            # print("收到Esc键，退出程序")
-            return False  # 停止监听
 
 
-def keyboard_listener():  
-    # 创建并启动键盘监听器线程  
-    with keyboard.Listener(on_press=on_press) as listener:  
-        listener.join() 
-
-def start_main(shared_data,can_use,follower,filter):
-    global mod_666
-    global mod_AE
-    global manual_triggered
-
-    for i in range(15):
-        can_use.read_ins_info()
-
-    # update_target_index
-    follower.update_target_index((can_use.ego_x, can_use.ego_y), can_use.ego_yaw, can_use.ego_v)
-    
-    while True:
-        t0 = time.time()
-        for i in range(30):
-            can_use.read_ins_info()
-            # print("can_use.ego_yaw: ",can_use.ego_yaw)
-
-        if can_use.eps_mode != 3 and manual_triggered:
-            mod_AE = 1
-            mod_666 = 1
-        if can_use.eps_mode == 3:
-            # print("==========================reset============================")
-            mod_AE = 3
-            mod_666 = 0
-            manual_triggered = False
-        if mod_AE == 1 and mod_666 == 1:
-
-            if can_use.ego_x is not None and can_use.ego_y is not None:     
-                turn_angle = follower.calculate_turn_angle((can_use.ego_x, can_use.ego_y, can_use.ego_yaw), can_use.ego_yaw, can_use.ego_v)
-                # turn_angle = 0
-                follower.update_target_index((can_use.ego_x, can_use.ego_y), can_use.ego_yaw, can_use.ego_v)
-                # print("turn_angle=", turn_angle)
-                filtered_angle = filter.update_speed(turn_angle)
-                # print("===========",turn_angle)
-                # print("time cost: ",time.time()-t0)
-                new_frame = [5, filtered_angle, 0]     
-            else:
-                # print("主车定位丢失...")
-                new_frame = [0, 0, 0]
-        else:
-            # print("请按s进入自动驾驶模式...")
-            new_frame = [0, 0, 0]
-            continue
-        with shared_data['lock']:
-            shared_data['frame'] = new_frame
-
-
-def send_frame(shared_data,can_use):
-    last_frame = None
-    global mod_AE
-    # print("here===================================")
-    while True:
-        # 每隔0.01秒发送一帧（100帧每秒）
-        time.sleep(0.005)
-        # 使用锁来读取共享数据
-        with shared_data["lock"]:
-            if shared_data["frame"] is not None:
-                last_frame = shared_data["frame"]
-
-        if last_frame != None:
-            can_use.publish_planner_ation(action = last_frame, id=0x666, action_type="acc", mod=1, enable=1)
-
-
-def main():
-    # 使用示例
-    trajectory_csv = '/home/renth/follow/collect_trajectory/processed_shiyanzhongxin_0327_with_yaw_ck.csv'
-    # 10
-    follower = VehicleTrajectoryFollower(trajectory_csv)
-    # 创建过滤器实例
-    filter = ISGSpeedFilter()
-    # 初始化canbus
-    can_use = Can_use(zone=50)
- 
-    
-    # 用于在线程之间共享数据
-    shared_data = {
-        "frame": None,  # 存储最新的帧
-        "lock": threading.Lock()  # 用于保证线程安全的锁
-    }
-    
-    # 创建计算线程和发送线程
-    compute_thread = threading.Thread(target=start_main, args=(shared_data,can_use,follower,filter))
-    send_thread = threading.Thread(target=send_frame, args=(shared_data,can_use))
-    # 键盘监听线程
-    keyboard_thread = threading.Thread(target=keyboard_listener, daemon=True)
-
-    # 启动线程
-    keyboard_thread.start()
-    compute_thread.start()
-    send_thread.start()
-        
-    # 主线程等待计算和发送线程完成（通常不会退出）
-    compute_thread.join()
-    send_thread.join()
         
         
     

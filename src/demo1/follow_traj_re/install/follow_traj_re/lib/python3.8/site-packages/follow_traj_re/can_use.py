@@ -60,6 +60,7 @@ class ISGSpeedFilter:
 
 class Can_use:
     def __init__(self):
+        print("111111111111111111111111111")
         self.bus_ins = can.interface.Bus(channel='can0', bustype='socketcan')
         self.bus_vcu = can.interface.Bus(channel='can1', bustype='socketcan')
         self.ego_lon = 31.8925019
@@ -137,7 +138,7 @@ class Can_use:
             # UTM: 0° 正东，北为正
             # 转换公式：UTM_yaw = 90 - INS_yaw
             utm_yaw_deg = 90 - HeadingAngle
-            print("utm yaw deg: ",utm_yaw_deg)
+            # print("utm yaw deg: ",utm_yaw_deg)
             utm_yaw_deg = normalize_angle(utm_yaw_deg)               
             
             utm_yaw_rad = math.radians(utm_yaw_deg)
@@ -148,7 +149,7 @@ class Can_use:
             self.previous_yaw = smoothed_yaw
             self.ego_yaw = smoothed_yaw
             self.ego_yaw_deg = math.degrees(smoothed_yaw)  # 转换回度数用于其他部分
-            print(" ego yaw in ins: ", self.ego_yaw)
+            # print(" ego yaw in ins: ", self.ego_yaw)
  
             
         if message_ins is not None and message_ins.arbitration_id == 0x500:

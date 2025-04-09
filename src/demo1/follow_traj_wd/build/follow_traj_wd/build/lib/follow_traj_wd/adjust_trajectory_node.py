@@ -16,6 +16,8 @@ from pyproj import Proj
 import matplotlib.pyplot as plt
 
 sys.path.append('/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/follow_traj_wd')
+from read_csv import read_mpc_csv
+
 from switch_trajectory import AdjustTrajectory, obstacle_position
 from can_use import Can_use
 from utils import Bbox
@@ -64,13 +66,13 @@ def adjust_trajectory(traj_data, obstacle_msg):
 
     return new_traj_data
 
-
 class TrajectoryPublisher(Node):
     def __init__(self):
         super().__init__('trajectory_publisher')
 
         # 发布轨迹的话题
         self.trajectory_pub_ = self.create_publisher(PoseArray, 'trajectory', 10)
+        self.mpc_trajectory_pub_ = self.create_publisher(PoseArray, 'mpc_trajectory', 10)
         self.obstacle_flag_pub_ = self.create_publisher(String, 'obstacle_reduce_speed', 1)
 
         # 订阅障碍物检测结果
@@ -112,8 +114,14 @@ class TrajectoryPublisher(Node):
         self.publish_trajectory(self.main_traj_data)
         self.get_logger().info('Initial trajectory published.')
         
+        mpc_trajectory_csv = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_shiyanzhongxin_0327_with_yaw_ck.csv'
+        self.mpc_traj_data = read_mpc_csv(mpc_trajectory_csv)
+        self.publish_mpc_trajectory(self.mpc_traj_data)
+        
         self.follower = AdjustTrajectory(self.main_traj_data,
                                                   self.second_traj_data)
+        
+        
         self.can_use = Can_use()
         
         # === 新增：定时器 ===
@@ -127,6 +135,7 @@ class TrajectoryPublisher(Node):
         """
         current_traj_data = self.follower.current_trajectory
         self.publish_trajectory(current_traj_data)
+        self.publish_mpc_trajectory(self.mpc_traj_data)
         
     def publish_trajectory(self, traj_data):
         """
@@ -158,6 +167,47 @@ class TrajectoryPublisher(Node):
             self.get_logger().info('Published an empty trajectory (no more path).')
 
         self.trajectory_pub_.publish(pose_array_msg)
+
+    def publish_mpc_trajectory(self, traj_data):
+        """
+        traj_data: list of [cx, cy, cyaw(弧度), ck]
+        """
+        pose_array_msg = PoseArray()
+        pose_array_msg.header.stamp = self.get_clock().now().to_msg()
+        pose_array_msg.header.frame_id = 'map'
+
+        if traj_data is not None:
+            for cx, cy, yaw_rad, ck in zip(traj_data[0],traj_data[1],traj_data[2],traj_data[3]):
+                pose = Pose()
+
+                # 位置
+                pose.position.x = float(cx)
+                pose.position.y = float(cy)
+                pose.position.z = 0.0
+
+                # 航向: yaw 转四元数
+                # 只使用 z,w 表示绕 Z 轴旋转
+                qz = math.sin(yaw_rad / 2.0)
+                qw = math.cos(yaw_rad / 2.0)
+
+                # 将曲率 ck 暂时存在 orientation.x
+                # (或者 orientation.y，二选一)
+                pose.orientation.x = float(ck)
+
+                # orientation.y 可以置 0
+                pose.orientation.y = 0.0
+
+                pose.orientation.z = qz
+                pose.orientation.w = qw
+
+                pose_array_msg.poses.append(pose)
+            self.get_logger().info('Published an mpc trajectory.')
+        else:
+            self.get_logger().info('Published an empty trajectory.')
+
+        self.mpc_trajectory_pub_.publish(pose_array_msg)
+
+
 
     def obstacle_callback(self, msg):
         """
@@ -228,7 +278,7 @@ class TrajectoryPublisher(Node):
                 # print("==========================",obstacle_x,obstacle_y)          
                 if obstacle_x is not None and obstacle_y is not None and abs(obstacle_y) < 4 and abs(obstacle_x) < 20:
                     obstacle_x_utm, obstacle_y_utm = obstacle_position(
-                        self.can_use.ego_lat, self.can_use.ego_lon, self.can_use.ego_yaw, obstacle_x, obstacle_y
+                        self.can_use.ego_lat, self.can_use.ego_lon, self.can_use.ego_yaw_deg, obstacle_x, obstacle_y
                     )
                     obstacles_memoryBank.append([obstacle_x_utm, obstacle_y_utm])
                     obstacles_list_xy.append([obstacle_x,obstacle_y])
@@ -309,7 +359,7 @@ class TrajectoryPublisher(Node):
             obstacle_x, obstacle_y = float(x_str) - 4, -float(y_str)
             if obstacle_x < 10 and abs(obstacle_y) < 2:
                 obstacle_x_utm, obstacle_y_utm = obstacle_position(
-                    self.can_use.ego_lat, self.can_use.ego_lon, self.can_use.ego_yaw, obstacle_x, obstacle_y
+                    self.can_use.ego_lat, self.can_use.ego_lon, self.can_use.ego_yaw_deg, obstacle_x, obstacle_y
                 )
                 obstacles_memoryBank.append([obstacle_x_utm, obstacle_y_utm])
                 obstacles_list_xy.append([obstacle_x,obstacle_y])
@@ -362,7 +412,7 @@ class TrajectoryPublisher(Node):
                     obstacle_detected = True
                     
                     obstacle_x_utm, obstacle_y_utm = obstacle_position(
-                        self.can_use.ego_lat, self.can_use.ego_lon, self.can_use.ego_yaw, obstacle_x, obstacle_y
+                        self.can_use.ego_lat, self.can_use.ego_lon, self.can_use.ego_yaw_deg, obstacle_x, obstacle_y
                     )
                     obstacles_memoryBank.append([obstacle_x_utm, obstacle_y_utm])
                     obstacles_list_xy.append([obstacle_x,obstacle_y])
@@ -380,7 +430,6 @@ class TrajectoryPublisher(Node):
     def adjust_trajectory(self, obstcle):
         
         # 在这里也可以做一些判断
-        
         # 判断是否调整轨迹
         self.follower.check_and_switch_trajectory(obstcle,safe_distance=1.5)
         self.traj_data = self.follower.current_trajectory

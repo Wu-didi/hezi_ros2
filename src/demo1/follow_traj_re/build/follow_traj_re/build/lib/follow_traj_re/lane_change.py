@@ -107,7 +107,7 @@ class LaneChangeDecider():
             # 画出utm坐标系下的cone
             plt.scatter(data_cone["utm_x"], data_cone["utm_y"], c="b", linewidth=10, label="Cone utm coords")       
             data_cone = [data_cone.iloc[0]['x'], data_cone.iloc[0]['y'], 
-                         2.0, 2.0]
+                         4.0, 4.0]
             if self.planning == False:
                 self.GenerateLaneBorrow(data_cone)
                 self.planning = True
@@ -139,6 +139,7 @@ class LaneChangeDecider():
         new_y = distance * math.sin(angle)
         return new_x, new_y, angle
    
+    # 生成换道部分轨迹
     def GenerateLaneBorrow(self, obs): 
         print("obs:", obs)
         """lane borrow"""

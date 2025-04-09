@@ -30,6 +30,14 @@ class FollowNode(Node):
             self.eps_callback,
             1
         )
+
+        self.refline_subscription = self.create_subscription(
+            Float32MultiArray,
+            'new_refline',
+            self.refline_callback,
+            1
+        )
+
         self.manual_triggered = True
         self.mode_AE = 1
         self.mode_666 = 1
@@ -43,6 +51,27 @@ class FollowNode(Node):
         self.planner_frame.data = [0.0, 
                                    0.0,
                                    0.0]
+    
+    def refline_callback(self, msg):
+        """
+        订阅新的参考线数据，并解析 cx, cy, cyaw, ck
+        """
+        data = msg.data
+        cx_size = msg.layout.dim[0].size
+        cy_size = msg.layout.dim[1].size
+        cyaw_size = msg.layout.dim[2].size
+        ck_size = msg.layout.dim[3].size
+
+        # 解析 cx, cy, cyaw, ck
+        self.cx = data[:cx_size]
+        self.cy = data[cx_size:cx_size + cy_size]
+        self.cyaw = data[cx_size + cy_size:cx_size + cy_size + cyaw_size]
+        self.ck = data[cx_size + cy_size + cyaw_size:]
+        self.follower.cx = self.cx
+        self.follower.cy = self.cy
+        self.follower.cyaw = self.cyaw
+        self.follower.ck = self.ck
+        self.get_logger().info(f"Received new line: cx={len(self.cx)}, cy={len(self.cy)}, cyaw={len(self.cyaw)}, ck={len(self.ck)}")
 
     def eps_callback(self, msg):
         self.latest_eps_mode = msg.data
@@ -51,8 +80,8 @@ class FollowNode(Node):
         if self.latest_eps_mode is None:
             self.get_logger().warn("尚未接收到eps_mode，跳过一次控制")
             return
-        self.get_logger().info(f"[vs_callback] Received state: {msg.data}")
-        self.get_logger().info(f"[vs_callback] EPS mode: {self.latest_eps_mode}")
+        # self.get_logger().info(f"[vs_callback] Received state: {msg.data}")
+        # self.get_logger().info(f"[vs_callback] EPS mode: {self.latest_eps_mode}")
         eps_mode = self.latest_eps_mode
         start = time.time()
         for i in range(20):
@@ -72,24 +101,20 @@ class FollowNode(Node):
             self.manual_triggered = False
         if self.mode_AE == 1 and self.mode_666 == 1:
             if x is not None and y is not None:
-                t0 = time.time()
-                acc, turn_angle = self.follower.act(state, obs_publish=None)
-                t1 = time.time()
-                print("temp1 time :", t1-t0)
+                acc, turn_angle = self.follower.act(state)
                 # self.follower.update_target_index(state)
                 filtered_angle = self.filter.update_speed(turn_angle)
-                logging.info(f'trun angle: {turn_angle}, filter angle: {filtered_angle}')
+                # logging.info(f'trun angle: {turn_angle}, filter angle: {filtered_angle}')
                 self.frame = [5.0, 
                               float(filtered_angle), 
                               0.0]
                 self.planner_frame.data = self.frame
-                self.get_logger().info(f"[vs_callback] Send frame: {self.planner_frame.data}")
+                # self.get_logger().info(f"[vs_callback] Send frame: {self.planner_frame.data}")
                 self.publisher_.publish(self.planner_frame)
-                print("temp2 time :", time.time()-t1)
                 return 
         self.publisher_.publish(self.planner_frame)
         elapsed_time = time.time() - start
-        self.get_logger().info(f"Calculation time:{elapsed_time:.6f} [sec]")
+        # self.get_logger().info(f"Calculation time:{elapsed_time:.6f} [sec]")
 
 def main(args=None):
     main_trajectory_csv = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_straight12_17_with_yaw_ck.csv'

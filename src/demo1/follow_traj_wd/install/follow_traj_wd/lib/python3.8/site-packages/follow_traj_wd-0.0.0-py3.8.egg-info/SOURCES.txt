@@ -13,7 +13,9 @@ follow_traj_wd/adjust_trajectory_node.py
 follow_traj_wd/can_node.py
 follow_traj_wd/can_use.py
 follow_traj_wd/follow_demo_2025.py
+follow_traj_wd/follow_demo_mpc_bank.py
 follow_traj_wd/follow_node.py
+follow_traj_wd/mpc_node_v2.py
 follow_traj_wd/read_csv.py
 follow_traj_wd/switch_trajectory.py
 follow_traj_wd/utils.py

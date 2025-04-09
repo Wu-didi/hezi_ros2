@@ -44,7 +44,7 @@ def read_csv(csv_file_path):
 
 
 class FollowNode(Node):
-    def __init__(self, main_trajectory_csv, alternate_trajectory_csv):
+    def __init__(self):
         super().__init__('Follow_node')
         self.publisher_ = self.create_publisher(
             Float32MultiArray, 
@@ -72,7 +72,7 @@ class FollowNode(Node):
             10
         )
         
-                # 订阅到轨迹
+         # 订阅到轨迹
         self.reduce_speed = self.create_subscription(
             String,
             'obstacle_reduce_speed',
@@ -123,7 +123,7 @@ class FollowNode(Node):
         # ego_v = msg.data[3]
         ego_lat = self.can_use.ego_lat
         ego_lon = self.can_use.ego_lon
-        ego_yaw = self.can_use.ego_yaw
+        ego_yaw = self.can_use.ego_yaw_deg
         ego_v   = self.can_use.ego_v
         if eps_mode != 3 and self.manual_triggered:
             self.mode_AE = 1

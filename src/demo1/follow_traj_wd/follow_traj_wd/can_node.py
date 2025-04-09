@@ -45,7 +45,7 @@ class CanNode(Node):
         eps_msg.data = int(self.can_use.eps_mode)
         vs_msg.data = [float(self.can_use.ego_lat), 
                     float(self.can_use.ego_lon), 
-                    float(self.can_use.ego_yaw),
+                    float(self.can_use.ego_yaw_deg),
                     float(self.can_use.ego_v)]
         self.vs_publisher.publish(vs_msg)
         self.eps_publisher.publish(eps_msg)
