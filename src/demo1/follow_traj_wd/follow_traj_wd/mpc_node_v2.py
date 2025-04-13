@@ -86,7 +86,10 @@ class FollowNode(Node):
         if self.can_use.ego_x is not None and self.can_use.ego_y is not None and (self.follower.cx is not None):     
             turn_angle = self.follower.calculate_turn_angle((self.can_use.ego_x, self.can_use.ego_y, self.can_use.ego_yaw_rad), self.can_use.ego_yaw_rad, self.can_use.ego_v)
             # turn_angle = 0
+            
+            # 因为内部有计算参考轨迹的时候，会计算目标点，这里就不再计算了 
             self.follower.update_target_index((self.can_use.ego_x, self.can_use.ego_y), self.can_use.ego_yaw_rad, self.can_use.ego_v)
+            
             # print("turn_angle=", turn_angle)
             filtered_angle = self.filter.update_speed(turn_angle)
             desired_speed, desired_acc = self.follower.calculate_speedAndacc(
@@ -171,7 +174,7 @@ class FollowNode(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    main_trajectory_csv = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_shiyanzhongxin_0327_with_yaw_ck.csv'
+    main_trajectory_csv = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_campus_0411_with_yaw_ck.csv'
     follow_node = FollowNode(main_trajectory_csv)
     rclpy.spin(follow_node)
     FollowNode.destroy_node()

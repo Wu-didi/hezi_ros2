@@ -89,7 +89,7 @@ class VehicleTrajectoryFollower:
         self.main_closest_index = 0
         self.alternate_closest_index = 0
         self.wheelbase = 3.5
-        self.offset_target_index = 3
+        self.offset_target_index = 10
         self.target_index = 0
         self.should_stop = False  # 增加停车标志位
         self.obstacle_detected = False  # 标记是否检测到障碍物
@@ -223,7 +223,7 @@ class VehicleTrajectoryFollower:
             target_index_obstacle = offset_target_index
         else:
             target_index_obstacle = self.offset_target_index
-        # print("==============", target_index_obstacle)
+        print("==============", target_index_obstacle)
         current_lat, current_lon, _ = current_position
         # 根据后轴的位置和heading调整得到前轴的位置
         front_lat, front_lon = self.adjust_position_to_front_axle(current_lat, current_lon, current_heading)

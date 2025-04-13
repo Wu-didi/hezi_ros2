@@ -312,6 +312,12 @@ class VehicleTrajectoryFollower:
         self.dl = 1  # 轨迹点之间的间隔
         self.closest_index = 0
         self.far_index = 45
+        self.offset_point = 8 # 最近点朝前挪动点数
+        self.previous_turn_angle = 0
+        self.max_turn_rate = 6
+        self.real_speed = 0
+        self.target_ind = 0
+        
         # self.cx, self.cy, self.cyaw, self.ck = read_csv(trajectory_csv)
         
         self.cx, self.cy, self.cyaw, self.ck,self.sp = None, None, None, None, None
@@ -322,8 +328,7 @@ class VehicleTrajectoryFollower:
         else:
             self.sp = None
             
-        self.previous_turn_angle = 0
-        self.max_turn_rate = 6
+
         
     def init_mpc(self):
         self.goal = [self.cx[-1], self.cy[-1]]
@@ -353,6 +358,7 @@ class VehicleTrajectoryFollower:
     # 得到mpc迭代的结果
     def calculate_turn_angle(self, ego_state, ego_yaw, ego_v):
         # 暂时定死ego_v
+        # self.real_speed = ego_v
         ego_v = 2.7 
         
         # 计算参考轨迹
@@ -437,7 +443,8 @@ class VehicleTrajectoryFollower:
 
             # print("===================turn angle: ",turn_angle)
             # 将转向角转换为度并平滑处理
-            filtered_angle = self.smooth_turn_angle(-turn_angle)
+            # filtered_angle = self.smooth_turn_angle(-turn_angle)
+            filtered_angle = -turn_angle
             # print("===================filtered_angle: ", filtered_angle)
             
             # 更新MPC控制器的上一轮控制输入
@@ -455,7 +462,15 @@ class VehicleTrajectoryFollower:
 
         temp_ind, _ = self.calc_nearest_index(state, cx, cy, cyaw, 0)
         self.closest_index = temp_ind
-        ind = temp_ind + 5
+        
+        # 根据速度定偏移量
+        # if self.real_speed >= 15:
+        #     self.offset_point = 10
+        # else:
+        #     self.offset_point = 5
+        
+        ind = temp_ind + self.offset_point
+        
         if pind >= ind:
             ind = pind
         ind = min(len(cx)-1,ind)
@@ -669,10 +684,10 @@ class VehicleTrajectoryFollower:
     
     
     def calculate_speedAndacc(self, turn_angle, current_position, current_speed, is_obstacle = False, points_num_threshold=20,
-                              high_speed = 25,
+                              high_speed = 30,
                               low_speed = 5):
         if current_speed < 1:
-            speed = high_speed
+            speed = low_speed
             acc = 0
             return speed, acc
         
@@ -732,8 +747,8 @@ class VehicleTrajectoryFollower:
             acc = 0
         
         if is_obstacle:
-            print("find obstacle reduce speed")
-            if current_speed >= low_speed+5:
+            print("==================== find obstacle reduce speed ===========================")
+            if current_speed >= low_speed+2:
                 speed = low_speed
                 acc = -3
             else:

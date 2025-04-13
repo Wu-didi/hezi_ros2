@@ -121,6 +121,7 @@ class Can_use:
             # 计算航向角（单位：度）
             # angle = degrees(atan2(INS_NorthSpd, INS_EastSpd))
             self.ego_v = 2.7
+            self.ego_v = speed
         # else:
         #     self.ego_v = None
 

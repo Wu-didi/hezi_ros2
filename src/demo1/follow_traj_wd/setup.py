@@ -22,11 +22,12 @@ setup(
     },
     entry_points={
         'console_scripts': [
-         'can_node          = follow_traj_wd.can_node:main',
-         'adjust_trajectory = follow_traj_wd.adjust_trajectory_node:main',
-         'follow_node       = follow_traj_wd.follow_node:main',
-        #  'mpc_can_node      = follow_traj_wd.can_node:main',
-         'mpc_follow_node   = follow_traj_wd.mpc_node_v2:main'
+         'can_node             = follow_traj_wd.can_node:main',
+         'adjust_trajectory    = follow_traj_wd.adjust_trajectory_node:main',
+         'follow_node          = follow_traj_wd.follow_node:main',
+         'mpc_follow_node      = follow_traj_wd.mpc_node_v2:main',
+         'hybrid_follow_node   = follow_traj_wd.hybrid_follow_node:main',
+         'publish_trajectory   = follow_traj_wd.publish_trajectory_node:main'
         ],
     },
 )

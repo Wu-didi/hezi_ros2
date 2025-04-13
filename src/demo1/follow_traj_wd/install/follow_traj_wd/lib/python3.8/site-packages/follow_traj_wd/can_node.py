@@ -33,9 +33,9 @@ class CanNode(Node):
 
         self.subscription  # prevent unused variable warning
         self.latest_msg = None
-        self.new_frame = [5, 40, 0]
+        self.new_frame = [0, 0, 0]
 
-        self.timer = self.create_timer(0.01, self.timer_callback)
+        self.timer = self.create_timer(0.001, self.timer_callback)
         self.action_timer = self.create_timer(0.005, self.publish_frame)
 
     def timer_callback(self):

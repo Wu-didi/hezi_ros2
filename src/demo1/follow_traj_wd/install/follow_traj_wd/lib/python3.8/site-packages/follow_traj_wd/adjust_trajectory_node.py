@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 
 sys.path.append('/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/follow_traj_wd')
 from read_csv import read_mpc_csv
-from lane_change import LaneChangeDecider
+from lane_change_vx import LaneChangeDecider
 
 from switch_trajectory import AdjustTrajectory, obstacle_position
 from can_use import Can_use
@@ -105,48 +105,47 @@ class TrajectoryPublisher(Node):
             10
         )
 
-        # 读取 CSV 初始轨迹
-        csv_file_path = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_shiyanzhongxin_0327.csv'
-        self.main_traj_data = read_csv(csv_file_path)
+        if  not self.is_mpc_trajectory:
+            # 读取 CSV 初始轨迹
+            csv_file_path = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_campus_0411.csv'
+            self.main_traj_data = read_csv(csv_file_path)
 
-        # csv_file_path = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_lane_change_right_0404.csv'
-        csv_file_path = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_shiyanzhongxin_0327.csv'
-        self.second_traj_data = read_csv(csv_file_path)
-        self.follower = AdjustTrajectory(self.main_traj_data,
-                                        self.second_traj_data) 
+            # csv_file_path = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_lane_change_right_0404.csv'
+            csv_file_path = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_campus_0411.csv'
+            self.second_traj_data = read_csv(csv_file_path)
+            self.follower = AdjustTrajectory(self.main_traj_data,
+                                            self.second_traj_data)
 
-        # 首次发布初始轨迹
-        self.publish_trajectory(self.main_traj_data)
-        self.get_logger().info('Initial trajectory published.')
+            # 首次发布初始轨迹
+            self.publish_trajectory(self.main_traj_data)
+            # self.get_logger().info('Initial trajectory published.')
+            
+        else:
+            #=============================下面是mpc================================
+            # mpc_trajectory_csv = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_shiyanzhongxin_0327_with_yaw_ck.csv'
+            mpc_trajectory_csv = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_campus_0411_with_yaw_ck.csv'
+            self.main_traj_data = read_mpc_csv(mpc_trajectory_csv)  # 读取到的是一个list [[x,x,x,x,],[y,y,y,y,y],[yaw,yaw,yaw,...],[ck,ck,ck..]]
+            self.publish_mpc_trajectory(self.main_traj_data)
         
-        mpc_trajectory_csv = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_shiyanzhongxin_0327_with_yaw_ck.csv'
-        # mpc_trajectory_csv = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_lane_change_right_0404_with_yaw_ck.csv'
-        self.mpc_main_traj_data = read_mpc_csv(mpc_trajectory_csv)  # 读取到的是一个list [[x,x,x,x,],[y,y,y,y,y],[yaw,yaw,yaw,...],[ck,ck,ck..]]
-        self.publish_mpc_trajectory(self.mpc_main_traj_data)
-    
-        mpc_trajectory_csv = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_shiyanzhongxin_0327_with_yaw_ck.csv'
-        # mpc_trajectory_csv = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_lane_change_left_0404_with_yaw_ck.csv'
-        self.mpc_second_traj_data = read_mpc_csv(mpc_trajectory_csv)  # 读取到的是一个list [[x,x,x,x,],[y,y,y,y,y],[yaw,yaw,yaw,...],[ck,ck,ck..]]
-    
-        self.follower = AdjustTrajectory(self.mpc_main_traj_data,
-                                        self.mpc_second_traj_data,
-                                        is_mpc_trajectory = self.is_mpc_trajectory) 
+            # mpc_trajectory_csv = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_shiyanzhongxin_0327_with_yaw_ck.csv'
+            mpc_trajectory_csv = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_campus_0411_with_yaw_ck.csv'
+            self.second_traj_data = read_mpc_csv(mpc_trajectory_csv)  # 读取到的是一个list [[x,x,x,x,],[y,y,y,y,y],[yaw,yaw,yaw,...],[ck,ck,ck..]]
+        
+            self.follower = AdjustTrajectory(self.main_traj_data,
+                                             self.second_traj_data,
+                                             is_mpc_trajectory = self.is_mpc_trajectory) 
     
         self.can_use = Can_use()
         # === 新增：定时器 ===
         # 周期性发布当前轨迹，无论是否收到障碍物信息
         self.timer_period = 0.1  # (HZ = 10)
         self.timer_ = self.create_timer(self.timer_period, self.timer_callback)
-        # print("===========================")
-        # print(len(self.mpc_main_traj_data[0]))
-        # print(len(self.mpc_main_traj_data[1]))
-        # print(len(self.mpc_main_traj_data[2]))
-        # print(len(self.mpc_main_traj_data[3]))
-        # from rth lanechage class
-        self.lane_change = LaneChangeDecider(cx   = self.mpc_main_traj_data[0],
-                                            cy   = self.mpc_main_traj_data[1],
-                                            cyaw = self.mpc_main_traj_data[2],
-                                            ck   = self.mpc_main_traj_data[3],
+
+        #========== from rth lanechage class =========
+        self.lane_change = LaneChangeDecider(cx   = self.main_traj_data[0],
+                                             cy   = self.main_traj_data[1],
+                                             cyaw = self.main_traj_data[2],
+                                             ck   = self.main_traj_data[3],
                                             )
         self.state = State()
         
@@ -156,7 +155,7 @@ class TrajectoryPublisher(Node):
         """
         current_traj_data = self.follower.current_trajectory
         if self.is_mpc_trajectory:
-            self.publish_mpc_trajectory(self.mpc_main_traj_data)
+            self.publish_mpc_trajectory(current_traj_data)
         else:
             self.publish_trajectory(current_traj_data)
             
@@ -186,6 +185,7 @@ class TrajectoryPublisher(Node):
                 pose.orientation.w = qw
 
                 pose_array_msg.poses.append(pose)
+            self.get_logger().info('Published an  trajectory.')
                 
         else:
             self.get_logger().info('Published an empty trajectory (no more path).')
@@ -250,7 +250,7 @@ class TrajectoryPublisher(Node):
                     pose.orientation.w = qw
 
                     pose_array_msg.poses.append(pose)
-            self.get_logger().info('Published an mpc trajectory.')
+            # self.get_logger().info('Published an mpc trajectory.')
         else:
             self.get_logger().info('Published an empty trajectory.')
 
@@ -273,17 +273,14 @@ class TrajectoryPublisher(Node):
             # 则发布“原始轨迹”即可
             # 没有障碍物 -> 发原轨迹
             self.obstacle_flag_pub_.publish(String(data="No"))
-            # self.traj_data = self.follower.current_trajectory
-            # self.publish_trajectory(self.traj_data)
-            self.follower.current_trajectory = self.main_traj_data
-            self.get_logger().info('No obstacle detected, published main trajectory.')
+            # self.follower.current_trajectory = self.main_traj_data
+            # self.get_logger().info('No obstacle detected, published main trajectory.')
         else:
             # 这里说明有障碍物信息，则调用调整轨迹
             self.obstacle_flag_pub_.publish(String(data="Yes"))
-            # self.adjust_utm_trajectory(obstacle_list)
-            # self.publish_trajectory(self.traj_data) # 统一在定时器里面发布
-            self.change_trajectory_rth(obstacle_list)
-            self.get_logger().info('Obstacle detected, published adjusted trajectory.')
+            # self.adjust_utm_trajectory(obstacle_list_utm)
+            self.change_trajectory_rth(obstacle_list)  # rth avoid abstacle function
+            # self.get_logger().info('Obstacle detected, published adjusted trajectory.')
 
     def parser_image_detection_results(self, msg):
         '''
@@ -293,14 +290,14 @@ class TrajectoryPublisher(Node):
         for i in range(20):
             self.can_use.read_ins_info()
         data = msg.data
-        self.get_logger().info("接收到检测结果: " + data)
+        # self.get_logger().info("接收到检测结果: " + data)
         obstacle_detected = False
         try:
             # 按照'|'分割，获取目标总数和坐标信息
             header, coordinates_str = data.split('|', 1)
             header = header.strip()  # 例如："Total targets: 3"
             total_targets = int(header.split(':')[1].strip())
-            self.get_logger().info("检测到目标总数: %d" % total_targets)
+            # self.get_logger().info("检测到目标总数: %d" % total_targets)
 
             coordinates_list = []
             coordinates_str = coordinates_str.strip()
@@ -413,7 +410,7 @@ class TrajectoryPublisher(Node):
                 )
                 obstacles_memoryBank.append([obstacle_x_utm, obstacle_y_utm])
                 obstacles_list_xy.append([obstacle_x,obstacle_y])
-        self.get_logger().info(f"youxiao {str(obstacles_list_xy)}")
+        # self.get_logger().info(f"youxiao {str(obstacles_list_xy)}")
     
         return obstacles_memoryBank
     
@@ -471,9 +468,9 @@ class TrajectoryPublisher(Node):
                 self.get_logger().warn(f"无法解析这行数据: {box_str}")
         
         # 打印或保存 xyz_list
-        self.get_logger().info(f"提取出的坐标数组: {obstacles_list_xy}")
+        # self.get_logger().info(f"提取出的坐标数组: {obstacles_list_xy}")
         if obstacle_detected:
-            return obstacles_memoryBank,obstacles_list_xy
+            return obstacles_memoryBank, obstacles_list_xy
         else:
             return [],[]
   
@@ -489,17 +486,19 @@ class TrajectoryPublisher(Node):
         # 判断是否调整轨迹
         self.follower.check_and_switch_utm_trajectory(obstcle,safe_distance=self.safe_distance)
         self.traj_data = self.follower.current_trajectory
+        
 
     def change_trajectory_rth(self,obstacle_list):
-        self.lane_change.init_refline()
+        # self.lane_change.init_refline()
         self.state.x   = self.can_use.ego_x
         self.state.y   = self.can_use.ego_y
         self.state.yaw = self.can_use.ego_yaw_rad
         self.state.v   = 2.7
-        print("=====obstacle_list:",obstacle_list)
+        # print("=====obstacle_list:",obstacle_list)
         self.lane_change.update_state(self.state, obstacle_list)
         cx, cy, cyaw, ck, sp = self.lane_change.publish_new_refline()
-        self.mpc_main_traj_data = [cx,cy,cyaw,ck,sp]
+        # self.mpc_main_traj_data = [cx,cy,cyaw,ck,sp]
+        self.follower.current_trajectory = [cx,cy,cyaw,ck,sp]
     
 def main(args=None):
     rclpy.init(args=args)

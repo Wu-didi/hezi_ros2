@@ -171,8 +171,7 @@ class AdjustTrajectory:
         self.far_previous_turn_angle = 0
         self.max_turn_rate = 6  # 限制每次转向角的最大变化速率（度）
         self.far_index = 25  # 远处的目标点，用于控制速度
-        self.control_speed_the = 30 #用於判斷遠處目標點和當前head的差值是否超過該值，然後進行速度的處理
-    
+        self.control_speed_the = 30 #用於判斷遠處目標點和當前head的差值是否超過該值，然後進行速度的處理   
     
     def switch_to_alternate(self):
         """切换到备选轨迹"""
@@ -330,6 +329,7 @@ class AdjustTrajectory:
         :param safe_distance: 安全距离
         :return: 如果轨迹安全返回 True，否则返回 False
         """
+        
         if len(obstacles) == 0:
             # print("len is 0")
             return True
@@ -338,7 +338,7 @@ class AdjustTrajectory:
             closest_point_idx = self.find_utm_closest_point_index_avoid(obstacle_x, obstacle_y, trajectory=trajectory)
             # print(closest_point_idx)
             traj_point_utm_x, traj_point_utm_y = trajectory[0][closest_point_idx],trajectory[1][closest_point_idx]
-            dist_to_closest_point = self.calculate_distance(obstacle_x, obstacle_y, traj_point_utm_x, traj_point_utm_y)
+            dist_to_closest_point = self.calculate_utm_distance(obstacle_x, obstacle_y, traj_point_utm_x, traj_point_utm_y)
             print("======================distance:===================",dist_to_closest_point)
             if dist_to_closest_point < safe_distance:
                 return False
@@ -391,6 +391,7 @@ class AdjustTrajectory:
         :param obstacles: 障碍物的坐标列表，格式为 [[x, y], ...]
         :param safe_distance: 安全距离
         """
+        
         main_safe = self.check_utm_trajectory_safe(self.main_trajectory, obstacles, safe_distance)
         alternate_safe = self.check_utm_trajectory_safe(self.alternate_trajectory, obstacles, safe_distance)
         # print(main_safe,alternate_safe)
@@ -401,25 +402,25 @@ class AdjustTrajectory:
             self.current_trajectory = None
         elif not self.is_using_alternate and not main_safe and alternate_safe:
             # 主轨迹不安全，备选轨迹安全，切换到备选轨迹
-            print("轨迹不安全，备选轨迹安全，切换到备选轨迹")
+            print("mpc轨迹不安全，备选mpc轨迹安全，切换到备选mpc轨迹")
             self.switch_to_alternate()
             self.should_stop = False
         elif self.is_using_alternate and not alternate_safe and main_safe:
             # 备选轨迹不安全，主轨迹安全，切换回主轨迹
-            print("备选轨迹不安全，主轨迹安全，切换回主轨迹")
+            print("备选mpc轨迹不安全，主轨迹安全，切换回主mpc轨迹")
             self.switch_to_main()
             self.should_stop = False
         elif self.is_using_alternate and main_safe and alternate_safe:
-            print("都安全，切换回主轨迹")
+            print("都安全，切换回主mpc轨迹")
             self.switch_to_main()
             self.should_stop = False
         elif not self.is_using_alternate and main_safe:
             # 继续使用主轨迹
-            print("继续使用主轨迹")
+            print("继续使用主mpc轨迹")
             self.should_stop = False
         elif self.is_using_alternate and alternate_safe:
             # 继续使用备选轨迹
-            print("继续使用备选轨迹")
+            print("继续使用备选mpc轨迹")
             self.should_stop = False
         else:
             # 其他情况，保持当前轨迹
