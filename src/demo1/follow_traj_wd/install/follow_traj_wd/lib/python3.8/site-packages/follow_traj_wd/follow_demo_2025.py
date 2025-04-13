@@ -11,7 +11,8 @@ import csv
 from pyproj import Proj
 import matplotlib.pyplot as plt
 # from perception.yolov8_detect import CameraObjectDetector
-from can_use import Can_use, ISGSpeedFilter
+from can_use import Can_use
+from utils import ISGSpeedFilter
 
 import pyproj
 import time 
@@ -208,12 +209,9 @@ class VehicleTrajectoryFollower:
             update_turn_angle = self.previous_turn_angle - 4
         else:
             update_turn_angle = turn_angle
-        
-    
-
         # 更新上一次的转向角
         self.previous_turn_angle = update_turn_angle
-        return turn_angle
+        return previous_turn_angle
 
     def calculate_turn_angle(self, current_position, current_heading,offset_target_index = None):
         if  self.current_trajectory == None:
@@ -249,7 +247,7 @@ class VehicleTrajectoryFollower:
         else:
             turn_angle = turn_angle * WHEEL_FACTOR    
         
-        turn_angle = self.smooth_turn_angle(turn_angle)
+        # turn_angle = self.smooth_turn_angle(turn_angle)
         
         return turn_angle
 

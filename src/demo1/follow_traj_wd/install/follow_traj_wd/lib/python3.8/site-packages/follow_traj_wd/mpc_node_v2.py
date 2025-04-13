@@ -12,7 +12,8 @@ from std_msgs.msg import String
 sys.path.append('/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/follow_traj_wd')
 
 # from mpc_follower import MPCfollower, State
-from follow_demo_mpc_bank import VehicleTrajectoryFollower, ISGSpeedFilter
+from follow_demo_mpc_bank import VehicleTrajectoryFollower
+from utils import ISGSpeedFilter
 from can_use import  Can_use
 # import logging
 
@@ -21,7 +22,7 @@ class FollowNode(Node):
         super().__init__('Follow_node')
         # 创建发布者
         self.publisher_ = self.create_publisher(Float32MultiArray,
-                                                'planner_action', 
+                                                'mpc_planner_action', 
                                                 1)
         
         self.vs_subscription = self.create_subscription(

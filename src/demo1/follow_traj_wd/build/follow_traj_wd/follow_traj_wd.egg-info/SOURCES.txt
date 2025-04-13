@@ -11,6 +11,7 @@ build/follow_traj_wd/follow_traj_wd.egg-info/zip-safe
 follow_traj_wd/__init__.py
 follow_traj_wd/adjust_trajectory_node.py
 follow_traj_wd/can_node.py
+follow_traj_wd/can_node_ori.py
 follow_traj_wd/can_use.py
 follow_traj_wd/follow_demo_2025.py
 follow_traj_wd/follow_demo_mpc_bank.py

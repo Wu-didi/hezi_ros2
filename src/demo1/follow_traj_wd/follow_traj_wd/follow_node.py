@@ -6,7 +6,7 @@ import time
 import sys
 sys.path.append('/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/follow_traj_wd')
 from follow_demo_2025 import VehicleTrajectoryFollower
-from can_use import ISGSpeedFilter
+from utils import ISGSpeedFilter
 from can_use import Can_use
 import logging
 from geometry_msgs.msg import PoseArray
@@ -48,7 +48,7 @@ class FollowNode(Node):
         super().__init__('Follow_node')
         self.publisher_ = self.create_publisher(
             Float32MultiArray, 
-            'planner_action', 
+            'my_planner_action', 
             1
         )
         self.vs_subscription = self.create_subscription(
@@ -143,7 +143,8 @@ class FollowNode(Node):
                                 float(0), 
                                 float(-3)]
                 else:
-                    filtered_angle = self.filter.update_speed(turn_angle)
+                    # filtered_angle = self.filter.update_speed(turn_angle)
+                    filtered_angle = turn_angle
                     desired_speed, desired_acc = self.follower.calculate_speedAndacc(
                             turn_angle, (ego_lat, ego_lon, ego_yaw), ego_v, is_obstacle = self.obstacle_reduce_speed)
                     # logging.info(f'trun angle: {turn_angle}, filter angle: {filtered_angle}')

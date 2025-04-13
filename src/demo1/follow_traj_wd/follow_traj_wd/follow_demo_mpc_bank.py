@@ -312,7 +312,7 @@ class VehicleTrajectoryFollower:
         self.dl = 1  # 轨迹点之间的间隔
         self.closest_index = 0
         self.far_index = 45
-        self.offset_point = 8 # 最近点朝前挪动点数
+        self.offset_point = 5 # 最近点朝前挪动点数
         self.previous_turn_angle = 0
         self.max_turn_rate = 6
         self.real_speed = 0
@@ -358,7 +358,7 @@ class VehicleTrajectoryFollower:
     # 得到mpc迭代的结果
     def calculate_turn_angle(self, ego_state, ego_yaw, ego_v):
         # 暂时定死ego_v
-        # self.real_speed = ego_v
+        self.real_speed = ego_v
         ego_v = 2.7 
         
         # 计算参考轨迹
@@ -464,10 +464,10 @@ class VehicleTrajectoryFollower:
         self.closest_index = temp_ind
         
         # 根据速度定偏移量
-        # if self.real_speed >= 15:
-        #     self.offset_point = 10
-        # else:
-        #     self.offset_point = 5
+        if self.real_speed >= 15:
+            self.offset_point = 10
+        else:
+            self.offset_point = 5
         
         ind = temp_ind + self.offset_point
         

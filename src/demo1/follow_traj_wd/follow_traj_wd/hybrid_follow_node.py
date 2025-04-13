@@ -8,7 +8,7 @@ sys.path.append('/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/follow_tra
 from follow_demo_2025 import VehicleTrajectoryFollower
 from follow_demo_mpc_bank import VehicleTrajectoryFollower as MPCVehicleTrajectoryFollower
 
-from can_use import ISGSpeedFilter
+from utils import ISGSpeedFilter
 from can_use import Can_use
 import logging
 from geometry_msgs.msg import PoseArray
@@ -115,27 +115,17 @@ class HybridFollowNode(Node):
     
     
     def vs_callback(self, msg):
-        
-        
-        for i in range(20):
+        for _ in range(20):
             self.can_use.read_ins_info()
-        
-        # 调用 MPCfollower 计算控制指令
-        if self.can_use.ego_x is not None and self.can_use.ego_y is not None:     
-            self.MPCfollower.update_target_index((self.can_use.ego_x, self.can_use.ego_y), self.can_use.ego_yaw_rad, self.can_use.ego_v)
             
-
-        result = self.is_curve(self.MPCfollower.target_ind)
-
-            
-        self.is_use_mpc = result 
-        
-        if self.is_use_mpc:
-            self.get_logger().info(f"+++++++++++++++++++++++++++++++++++++using mpc track trajectory++++++++++++++++++++++++++++++++++")
-            self.mpc_compute_and_publish(msg)
-        else:
+        if self.can_use.ego_v >= 15:
+            self.is_use_mpc = False
             self.get_logger().info(f"------------------------------------using my method track trajectory----------------------------")
             self.my_method(msg) 
+        else:
+            self.is_use_mpc = True
+            self.get_logger().info(f"+++++++++++++++++++++++++++++++++++++using mpc track trajectory++++++++++++++++++++++++++++++++++")
+            self.mpc_compute_and_publish(msg)
 
 
         

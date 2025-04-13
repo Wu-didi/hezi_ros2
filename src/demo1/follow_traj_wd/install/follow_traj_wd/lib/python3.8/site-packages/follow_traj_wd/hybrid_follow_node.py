@@ -8,7 +8,7 @@ sys.path.append('/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/follow_tra
 from follow_demo_2025 import VehicleTrajectoryFollower
 from follow_demo_mpc_bank import VehicleTrajectoryFollower as MPCVehicleTrajectoryFollower
 
-from can_use import ISGSpeedFilter
+from utils import ISGSpeedFilter
 from can_use import Can_use
 import logging
 from geometry_msgs.msg import PoseArray
@@ -115,20 +115,17 @@ class HybridFollowNode(Node):
     
     
     def vs_callback(self, msg):
-        if self.is_not_use_mpc:
-            result = self.is_curve(self.MPCfollower.target_ind)
-        else:
-            result = self.is_curve(self.follower.target_index)
+        for _ in range(20):
+            self.can_use.read_ins_info()
             
-        self.is_use_mpc = result 
-        
-        if self.is_use_mpc:
-
-            self.get_logger().info(f"+++++++++++++++++++++++++++++++++++++using mpc track trajectory++++++++++++++++++++++++++++++++++")
-            self.mpc_compute_and_publish(msg)
-        else:
+        if self.can_use.ego_v >= 15:
+            self.is_use_mpc = False
             self.get_logger().info(f"------------------------------------using my method track trajectory----------------------------")
             self.my_method(msg) 
+        else:
+            self.is_use_mpc = True
+            self.get_logger().info(f"+++++++++++++++++++++++++++++++++++++using mpc track trajectory++++++++++++++++++++++++++++++++++")
+            self.mpc_compute_and_publish(msg)
 
 
         
@@ -190,9 +187,8 @@ class HybridFollowNode(Node):
         3. 对控制指令进行滤波
         4. 发布最新计算得到的控制指令
         """
-        start_time = time.time()
+        # start_time = time.time()
         
-        # 模拟连续读取 INS 数据（读取 20 次数据）
         for _ in range(20):
             self.can_use.read_ins_info()
         ego_lat = self.can_use.ego_lat

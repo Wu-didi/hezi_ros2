@@ -11,7 +11,7 @@ import csv
 from pyproj import Proj
 import matplotlib.pyplot as plt
 # from perception.yolov8_detect import CameraObjectDetector
-from can_use import Can_use, ISGSpeedFilter
+from can_use import Can_use
 
 import pyproj
 import time 
