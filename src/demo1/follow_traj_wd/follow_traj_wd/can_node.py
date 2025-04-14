@@ -83,7 +83,7 @@ class CanNode(Node):
             for _ in range(1):
                 self.can_use.read_ins_info()
                 
-            if self.can_use.ego_v >= 15:
+            if self.can_use.ego_v >= 10:
                 self.latest_msg = self.my_latest_msg
                 self.get_logger().info("使用my method 计算结果")
             else:

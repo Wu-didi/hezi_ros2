@@ -135,7 +135,7 @@ class FollowNode(Node):
         if self.mode_AE == 1 and self.mode_666 == 1:
             if ego_lon is not None and ego_lat is not None:
                 turn_angle = self.follower.calculate_turn_angle(
-                    (ego_lat, ego_lon, ego_yaw), ego_yaw)
+                    (ego_lat, ego_lon, ego_yaw), ego_yaw, ego_v)
                 if turn_angle == "no_current_trajectory":
                     self.get_logger().info(f"没有轨迹 or 轨迹不可通行，需要停车")
                     # 需要紧急停车

@@ -92,7 +92,7 @@ WHEEL_WIDTH = 0.2  # [m]
 TREAD = 0.7  # [m]
 WB = 3  # [m]
 
-MAX_STEER = np.deg2rad(63)  # maximum steering angle [rad]
+MAX_STEER = np.deg2rad(69)  # 63 maximum steering angle [rad]
 MAX_DSTEER = np.deg2rad(30.0)  # maximum steering speed [rad/s]
 MAX_SPEED = 55.0 / 3.6  # maximum speed [m/s]
 MIN_SPEED = -20.0 / 3.6  # minimum speed [m/s]
@@ -433,10 +433,10 @@ class VehicleTrajectoryFollower:
             # -pi,pi
             # print("di deg = ", di_deg, "ai = ", ai)
             
-            if di_deg*WHEEL_FACTOR>460:
-                turn_angle = 460
-            elif di_deg*WHEEL_FACTOR<-460:
-                turn_angle = -460
+            if di_deg*WHEEL_FACTOR>500:
+                turn_angle = 500
+            elif di_deg*WHEEL_FACTOR<-500:
+                turn_angle = -500
             else:
                 # print("di_deg in else: ",di_deg)
                 turn_angle = di_deg*WHEEL_FACTOR 
@@ -464,10 +464,10 @@ class VehicleTrajectoryFollower:
         self.closest_index = temp_ind
         
         # 根据速度定偏移量
-        if self.real_speed >= 15:
-            self.offset_point = 10
-        else:
+        if self.real_speed >= 8:
             self.offset_point = 5
+        else:
+            self.offset_point = 3
         
         ind = temp_ind + self.offset_point
         
@@ -727,10 +727,10 @@ class VehicleTrajectoryFollower:
         if far_turn_angle > 180:
             far_turn_angle -= 360        
         # 映射到方向盘转角
-        if far_turn_angle * WHEEL_FACTOR > 460:
-            far_turn_angle = 460
-        elif far_turn_angle * WHEEL_FACTOR < -460:
-            far_turn_angle = -460
+        if far_turn_angle * WHEEL_FACTOR > 500:
+            far_turn_angle = 500
+        elif far_turn_angle * WHEEL_FACTOR < -500:
+            far_turn_angle = -500
         else:
             far_turn_angle = far_turn_angle * WHEEL_FACTOR    
         print("====== far_turn_angle: ",far_turn_angle)

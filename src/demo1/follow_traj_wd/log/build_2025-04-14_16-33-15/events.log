@@ -1,0 +1,59 @@
+[0.000000] (-) TimerEvent: {}
+[0.000661] (follow_traj_wd) JobQueued: {'identifier': 'follow_traj_wd', 'dependencies': OrderedDict()}
+[0.001173] (follow_traj_wd) JobStarted: {'identifier': 'follow_traj_wd'}
+[0.104799] (-) TimerEvent: {}
+[0.206092] (-) TimerEvent: {}
+[0.307459] (-) TimerEvent: {}
+[0.409217] (-) TimerEvent: {}
+[0.511229] (-) TimerEvent: {}
+[0.612310] (-) TimerEvent: {}
+[0.713009] (-) TimerEvent: {}
+[0.813680] (-) TimerEvent: {}
+[0.915098] (-) TimerEvent: {}
+[1.016815] (-) TimerEvent: {}
+[1.118077] (-) TimerEvent: {}
+[1.219458] (-) TimerEvent: {}
+[1.320411] (-) TimerEvent: {}
+[1.421037] (-) TimerEvent: {}
+[1.521690] (-) TimerEvent: {}
+[1.622245] (-) TimerEvent: {}
+[1.722772] (-) TimerEvent: {}
+[1.805986] (follow_traj_wd) Command: {'cmd': ['/usr/bin/python3', 'setup.py', 'egg_info', '--egg-base', 'build/follow_traj_wd', 'build', '--build-base', '/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/build/follow_traj_wd/build', 'install', '--record', '/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/build/follow_traj_wd/install.log', '--single-version-externally-managed'], 'cwd': '/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd', 'env': {'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'nvidia', 'SSH_CLIENT': '192.168.1.43 64068 22', 'LC_TIME': 'zh_CN.UTF-8', 'XDG_SESSION_TYPE': 'tty', 'GIT_ASKPASS': '/home/nvidia/.vscode-server/cli/servers/Stable-38c31bc77e0dd6ae88a4e9cc93428cc27a56ba40/server/extensions/git/dist/askpass.sh', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/usr/local/cuda-11.4/lib64:/opt/ros/foxy/opt/yaml_cpp_vendor/lib:/opt/ros/foxy/opt/rviz_ogre_vendor/lib:/opt/ros/foxy/lib/aarch64-linux-gnu:/opt/ros/foxy/lib:/usr/local/cuda-11.4/lib64:', 'BROWSER': '/home/nvidia/.vscode-server/cli/servers/Stable-38c31bc77e0dd6ae88a4e9cc93428cc27a56ba40/server/bin/helpers/browser.sh', 'MOTD_SHOWN': 'pam', 'HOME': '/home/nvidia', 'OLDPWD': '/home/nvidia/.vscode-server', 'TERM_PROGRAM_VERSION': '1.93.1', 'VSCODE_IPC_HOOK_CLI': '/run/user/1000/vscode-ipc-d33a873f-8c16-4d13-bd4c-9d0dbbd4f42e.sock', 'JETSON_L4T': '35.4.1', 'ROS_PYTHON_VERSION': '3', 'JETSON_MODEL': 'Jetson AGX Orin Developer Kit', 'VSCODE_GIT_ASKPASS_MAIN': '/home/nvidia/.vscode-server/cli/servers/Stable-38c31bc77e0dd6ae88a4e9cc93428cc27a56ba40/server/extensions/git/dist/askpass-main.js', 'LC_MONETARY': 'zh_CN.UTF-8', 'VSCODE_GIT_ASKPASS_NODE': '/home/nvidia/.vscode-server/cli/servers/Stable-38c31bc77e0dd6ae88a4e9cc93428cc27a56ba40/server/node', 'SSL_CERT_FILE': '/usr/lib/ssl/certs/ca-certificates.crt', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'COLCON_PREFIX_PATH': '/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install:/home/nvidia/vcii/pointpillar_ros_version/install', 'ROS_DISTRO': 'foxy', 'LOGNAME': 'nvidia', 'JETSON_MODULE': 'NVIDIA Jetson AGX Orin (64GB ram)', 'JETSON_SERIAL_NUMBER': '1421524312429', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'JETSON_CODENAME': 'Concord', 'XDG_SESSION_CLASS': 'user', 'TERM': 'xterm-256color', 'XDG_SESSION_ID': '4', 'ROS_LOCALHOST_ONLY': '0', 'PATH': '/usr/local/cuda-11.4/bin:/home/nvidia/.vscode-server/cli/servers/Stable-38c31bc77e0dd6ae88a4e9cc93428cc27a56ba40/server/bin/remote-cli:/home/nvidia/.local/bin:/opt/ros/foxy/bin:/usr/local/cuda-11.4/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin', 'LC_ADDRESS': 'zh_CN.UTF-8', 'XDG_RUNTIME_DIR': '/run/user/1000', 'SSL_CERT_DIR': '/usr/lib/ssl/certs', 'LD_PRELOAD': '/usr/lib/aarch64-linux-gnu/libgomp.so.1', 'LANG': 'en_US.UTF-8', 'LC_TELEPHONE': 'zh_CN.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:', 'JETSON_SOC': 'tegra23x', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-57e94b41a7.sock', 'TERM_PROGRAM': 'vscode', 'AMENT_PREFIX_PATH': '/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd:/home/nvidia/vcii/pointpillar_ros_version/install/lidar_detection:/opt/ros/foxy', 'SHELL': '/bin/bash', 'LC_NAME': 'zh_CN.UTF-8', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'LC_MEASUREMENT': 'zh_CN.UTF-8', 'LC_IDENTIFICATION': 'zh_CN.UTF-8', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'JETSON_CUDA_ARCH_BIN': '8.7', 'PWD': '/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/build/follow_traj_wd', 'LC_ALL': 'en_US.UTF-8', 'SSH_CONNECTION': '192.168.1.43 64068 192.168.1.102 22', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/build/follow_traj_wd/prefix_override:/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/python3.8/site-packages:/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/python3.8/site-packages:/opt/ros/foxy/lib/python3.8/site-packages', 'LC_NUMERIC': 'zh_CN.UTF-8', 'LC_PAPER': 'zh_CN.UTF-8', 'COLCON': '1', 'JETSON_JETPACK': '5.1.2', 'CMAKE_PREFIX_PATH': '/home/nvidia/vcii/pointpillar_ros_version/install/lidar_detection', 'JETSON_P_NUMBER': 'p3701-0005'}, 'shell': False}
+[1.822885] (-) TimerEvent: {}
+[1.923394] (-) TimerEvent: {}
+[2.024103] (-) TimerEvent: {}
+[2.124701] (-) TimerEvent: {}
+[2.136333] (follow_traj_wd) StdoutLine: {'line': b'running egg_info\n'}
+[2.137056] (follow_traj_wd) StdoutLine: {'line': b'writing build/follow_traj_wd/follow_traj_wd.egg-info/PKG-INFO\n'}
+[2.137547] (follow_traj_wd) StdoutLine: {'line': b'writing dependency_links to build/follow_traj_wd/follow_traj_wd.egg-info/dependency_links.txt\n'}
+[2.137846] (follow_traj_wd) StdoutLine: {'line': b'writing entry points to build/follow_traj_wd/follow_traj_wd.egg-info/entry_points.txt\n'}
+[2.138057] (follow_traj_wd) StdoutLine: {'line': b'writing requirements to build/follow_traj_wd/follow_traj_wd.egg-info/requires.txt\n'}
+[2.138214] (follow_traj_wd) StdoutLine: {'line': b'writing top-level names to build/follow_traj_wd/follow_traj_wd.egg-info/top_level.txt\n'}
+[2.182824] (follow_traj_wd) StdoutLine: {'line': b"reading manifest file 'build/follow_traj_wd/follow_traj_wd.egg-info/SOURCES.txt'\n"}
+[2.184079] (follow_traj_wd) StdoutLine: {'line': b"writing manifest file 'build/follow_traj_wd/follow_traj_wd.egg-info/SOURCES.txt'\n"}
+[2.184385] (follow_traj_wd) StdoutLine: {'line': b'running build\n'}
+[2.184648] (follow_traj_wd) StdoutLine: {'line': b'running build_py\n'}
+[2.185272] (follow_traj_wd) StdoutLine: {'line': b'copying follow_traj_wd/follow_demo_mpc_bank.py -> /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/build/follow_traj_wd/build/lib/follow_traj_wd\n'}
+[2.186092] (follow_traj_wd) StdoutLine: {'line': b'running install\n'}
+[2.187268] (follow_traj_wd) StdoutLine: {'line': b'running install_lib\n'}
+[2.189029] (follow_traj_wd) StdoutLine: {'line': b'copying /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/build/follow_traj_wd/build/lib/follow_traj_wd/follow_demo_mpc_bank.py -> /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/python3.8/site-packages/follow_traj_wd\n'}
+[2.190340] (follow_traj_wd) StdoutLine: {'line': b'byte-compiling /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/python3.8/site-packages/follow_traj_wd/follow_demo_mpc_bank.py to follow_demo_mpc_bank.cpython-38.pyc\n'}
+[2.197891] (follow_traj_wd) StdoutLine: {'line': b'running install_data\n'}
+[2.198775] (follow_traj_wd) StdoutLine: {'line': b'running install_egg_info\n'}
+[2.200798] (follow_traj_wd) StdoutLine: {'line': b"removing '/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/python3.8/site-packages/follow_traj_wd-0.0.0-py3.8.egg-info' (and everything under it)\n"}
+[2.201320] (follow_traj_wd) StdoutLine: {'line': b'Copying build/follow_traj_wd/follow_traj_wd.egg-info to /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/python3.8/site-packages/follow_traj_wd-0.0.0-py3.8.egg-info\n'}
+[2.202742] (follow_traj_wd) StdoutLine: {'line': b'running install_scripts\n'}
+[2.224794] (-) TimerEvent: {}
+[2.226784] (follow_traj_wd) StdoutLine: {'line': b'Installing adjust_trajectory script to /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/follow_traj_wd\n'}
+[2.227181] (follow_traj_wd) StdoutLine: {'line': b'Installing can_node script to /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/follow_traj_wd\n'}
+[2.227642] (follow_traj_wd) StdoutLine: {'line': b'Installing follow_node script to /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/follow_traj_wd\n'}
+[2.228013] (follow_traj_wd) StdoutLine: {'line': b'Installing hybrid_follow_node script to /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/follow_traj_wd\n'}
+[2.228282] (follow_traj_wd) StdoutLine: {'line': b'Installing mpc_follow_node script to /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/follow_traj_wd\n'}
+[2.228607] (follow_traj_wd) StdoutLine: {'line': b'Installing publish_trajectory script to /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/follow_traj_wd\n'}
+[2.228964] (follow_traj_wd) StdoutLine: {'line': b"writing list of installed files to '/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/build/follow_traj_wd/install.log'\n"}
+[2.278519] (follow_traj_wd) CommandEnded: {'returncode': 0}
+[2.324942] (-) TimerEvent: {}
+[2.425734] (-) TimerEvent: {}
+[2.526995] (follow_traj_wd) JobEnded: {'identifier': 'follow_traj_wd', 'rc': 0}
+[2.528174] (-) TimerEvent: {}
+[2.528301] (-) EventReactorShutdown: {}

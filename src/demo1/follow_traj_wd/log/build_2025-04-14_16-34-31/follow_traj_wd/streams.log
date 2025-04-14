@@ -1,0 +1,29 @@
+[1.827s] Invoking command in '/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd': PYTHONPATH=/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/build/follow_traj_wd/prefix_override:/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/python3.8/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base build/follow_traj_wd build --build-base /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/build/follow_traj_wd/build install --record /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/build/follow_traj_wd/install.log --single-version-externally-managed
+[2.179s] running egg_info
+[2.180s] writing build/follow_traj_wd/follow_traj_wd.egg-info/PKG-INFO
+[2.181s] writing dependency_links to build/follow_traj_wd/follow_traj_wd.egg-info/dependency_links.txt
+[2.181s] writing entry points to build/follow_traj_wd/follow_traj_wd.egg-info/entry_points.txt
+[2.181s] writing requirements to build/follow_traj_wd/follow_traj_wd.egg-info/requires.txt
+[2.181s] writing top-level names to build/follow_traj_wd/follow_traj_wd.egg-info/top_level.txt
+[2.226s] reading manifest file 'build/follow_traj_wd/follow_traj_wd.egg-info/SOURCES.txt'
+[2.227s] writing manifest file 'build/follow_traj_wd/follow_traj_wd.egg-info/SOURCES.txt'
+[2.228s] running build
+[2.228s] running build_py
+[2.229s] copying follow_traj_wd/follow_demo_mpc_bank.py -> /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/build/follow_traj_wd/build/lib/follow_traj_wd
+[2.229s] running install
+[2.231s] running install_lib
+[2.232s] copying /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/build/follow_traj_wd/build/lib/follow_traj_wd/follow_demo_mpc_bank.py -> /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/python3.8/site-packages/follow_traj_wd
+[2.234s] byte-compiling /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/python3.8/site-packages/follow_traj_wd/follow_demo_mpc_bank.py to follow_demo_mpc_bank.cpython-38.pyc
+[2.241s] running install_data
+[2.242s] running install_egg_info
+[2.244s] removing '/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/python3.8/site-packages/follow_traj_wd-0.0.0-py3.8.egg-info' (and everything under it)
+[2.245s] Copying build/follow_traj_wd/follow_traj_wd.egg-info to /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/python3.8/site-packages/follow_traj_wd-0.0.0-py3.8.egg-info
+[2.246s] running install_scripts
+[2.271s] Installing adjust_trajectory script to /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/follow_traj_wd
+[2.271s] Installing can_node script to /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/follow_traj_wd
+[2.271s] Installing follow_node script to /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/follow_traj_wd
+[2.272s] Installing hybrid_follow_node script to /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/follow_traj_wd
+[2.272s] Installing mpc_follow_node script to /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/follow_traj_wd
+[2.272s] Installing publish_trajectory script to /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/follow_traj_wd
+[2.273s] writing list of installed files to '/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/build/follow_traj_wd/install.log'
+[2.324s] Invoked command in '/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd' returned '0': PYTHONPATH=/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/build/follow_traj_wd/prefix_override:/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/python3.8/site-packages:${PYTHONPATH} /usr/bin/python3 setup.py egg_info --egg-base build/follow_traj_wd build --build-base /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/build/follow_traj_wd/build install --record /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/build/follow_traj_wd/install.log --single-version-externally-managed

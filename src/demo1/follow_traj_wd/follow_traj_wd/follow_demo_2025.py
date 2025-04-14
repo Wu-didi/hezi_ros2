@@ -90,7 +90,7 @@ class VehicleTrajectoryFollower:
         self.main_closest_index = 0
         self.alternate_closest_index = 0
         self.wheelbase = 3.5
-        self.offset_target_index = 10
+        self.offset_target_index = 15
         self.target_index = 0
         self.should_stop = False  # 增加停车标志位
         self.obstacle_detected = False  # 标记是否检测到障碍物
@@ -213,7 +213,7 @@ class VehicleTrajectoryFollower:
         self.previous_turn_angle = update_turn_angle
         return previous_turn_angle
 
-    def calculate_turn_angle(self, current_position, current_heading,offset_target_index = None):
+    def calculate_turn_angle(self, current_position, current_heading, current_speed, offset_target_index = None):
         if  self.current_trajectory == None:
             return 'no_current_trajectory'
         
@@ -221,6 +221,11 @@ class VehicleTrajectoryFollower:
             target_index_obstacle = offset_target_index
         else:
             target_index_obstacle = self.offset_target_index
+        if current_speed >= 20:
+            target_index_obstacle = target_index_obstacle
+        else: 
+            target_index_obstacle = 3
+            
         print("==============", target_index_obstacle)
         current_lat, current_lon, _ = current_position
         # 根据后轴的位置和heading调整得到前轴的位置

@@ -90,11 +90,11 @@ class TrajectoryPublisher(Node):
         )
 
         # 读取 CSV 初始轨迹
-        csv_file_path = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_shiyanzhongxin_0327.csv'
+        csv_file_path = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_campus_0411.csv'
         self.main_traj_data = read_csv(csv_file_path)
 
         # csv_file_path = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_lane_change_right_0404.csv'
-        csv_file_path = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_shiyanzhongxin_0327.csv'
+        csv_file_path = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_campus_0411.csv'
         self.second_traj_data = read_csv(csv_file_path)
         self.follower = AdjustTrajectory(self.main_traj_data,
                                         self.second_traj_data)
@@ -104,12 +104,12 @@ class TrajectoryPublisher(Node):
         # self.get_logger().info('Initial trajectory published.')
         
         #=============================下面是mpc================================
-        mpc_trajectory_csv = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_shiyanzhongxin_0327_with_yaw_ck.csv'
+        mpc_trajectory_csv = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_campus_0411_with_yaw_ck.csv'
         # mpc_trajectory_csv = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_lane_change_right_0404_with_yaw_ck.csv'
         self.main_traj_data = read_mpc_csv(mpc_trajectory_csv)  # 读取到的是一个list [[x,x,x,x,],[y,y,y,y,y],[yaw,yaw,yaw,...],[ck,ck,ck..]]
         self.publish_mpc_trajectory(self.main_traj_data)
     
-        mpc_trajectory_csv = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_shiyanzhongxin_0327_with_yaw_ck.csv'
+        mpc_trajectory_csv = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_campus_0411_with_yaw_ck.csv'
         # mpc_trajectory_csv = '/home/nvidia/vcii/follow_trajectory/collect_trajectory/processed_lane_change_left_0404_with_yaw_ck.csv'
         self.second_traj_data = read_mpc_csv(mpc_trajectory_csv)  # 读取到的是一个list [[x,x,x,x,],[y,y,y,y,y],[yaw,yaw,yaw,...],[ck,ck,ck..]]
     
