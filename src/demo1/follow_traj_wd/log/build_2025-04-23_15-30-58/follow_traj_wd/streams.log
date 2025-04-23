@@ -1,0 +1,33 @@
+[1.515s] Invoking command in '/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd': PYTHONPATH=/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/build/follow_traj_wd/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/python3.8/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base build/follow_traj_wd build --build-base /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/build/follow_traj_wd/build install --record /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/build/follow_traj_wd/install.log --single-version-externally-managed install_data
+[2.007s] running egg_info
+[2.008s] writing build/follow_traj_wd/follow_traj_wd.egg-info/PKG-INFO
+[2.009s] writing dependency_links to build/follow_traj_wd/follow_traj_wd.egg-info/dependency_links.txt
+[2.009s] writing entry points to build/follow_traj_wd/follow_traj_wd.egg-info/entry_points.txt
+[2.010s] writing requirements to build/follow_traj_wd/follow_traj_wd.egg-info/requires.txt
+[2.011s] writing top-level names to build/follow_traj_wd/follow_traj_wd.egg-info/top_level.txt
+[2.080s] reading manifest file 'build/follow_traj_wd/follow_traj_wd.egg-info/SOURCES.txt'
+[2.082s] writing manifest file 'build/follow_traj_wd/follow_traj_wd.egg-info/SOURCES.txt'
+[2.082s] running build
+[2.082s] running build_py
+[2.084s] copying follow_traj_wd/can_use.py -> /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/build/follow_traj_wd/build/lib/follow_traj_wd
+[2.086s] copying follow_traj_wd/visualization_node.py -> /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/build/follow_traj_wd/build/lib/follow_traj_wd
+[2.088s] running install
+[2.091s] running install_lib
+[2.094s] copying /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/build/follow_traj_wd/build/lib/follow_traj_wd/can_use.py -> /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/python3.8/site-packages/follow_traj_wd
+[2.095s] copying /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/build/follow_traj_wd/build/lib/follow_traj_wd/visualization_node.py -> /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/python3.8/site-packages/follow_traj_wd
+[2.097s] byte-compiling /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/python3.8/site-packages/follow_traj_wd/can_use.py to can_use.cpython-38.pyc
+[2.104s] byte-compiling /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/python3.8/site-packages/follow_traj_wd/visualization_node.py to visualization_node.cpython-38.pyc
+[2.110s] running install_data
+[2.110s] running install_egg_info
+[2.114s] removing '/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/python3.8/site-packages/follow_traj_wd-0.0.0-py3.8.egg-info' (and everything under it)
+[2.115s] Copying build/follow_traj_wd/follow_traj_wd.egg-info to /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/python3.8/site-packages/follow_traj_wd-0.0.0-py3.8.egg-info
+[2.117s] running install_scripts
+[2.154s] Installing adjust_trajectory script to /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/follow_traj_wd
+[2.154s] Installing can_node script to /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/follow_traj_wd
+[2.154s] Installing follow_node script to /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/follow_traj_wd
+[2.155s] Installing hybrid_follow_node script to /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/follow_traj_wd
+[2.156s] Installing mpc_follow_node script to /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/follow_traj_wd
+[2.156s] Installing publish_trajectory script to /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/follow_traj_wd
+[2.156s] Installing visualize_node script to /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/follow_traj_wd
+[2.158s] writing list of installed files to '/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/build/follow_traj_wd/install.log'
+[2.223s] Invoked command in '/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd' returned '0': PYTHONPATH=/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/build/follow_traj_wd/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/install/follow_traj_wd/lib/python3.8/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated setup.py egg_info --egg-base build/follow_traj_wd build --build-base /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/build/follow_traj_wd/build install --record /home/nvidia/vcii/hezi_ros2/src/demo1/follow_traj_wd/build/follow_traj_wd/install.log --single-version-externally-managed install_data

@@ -1,4 +1,4 @@
-"如果转角阈值过大或者过小，做一个滤波"
+"黑车版本轨迹跟踪、根据速度调整目标点"
 import os 
 from pyproj import CRS, Transformer
 import sys
@@ -12,6 +12,18 @@ import threading
 import math
 import cvxpy
 from can_use import Can_use
+
+import logging
+import datetime
+
+timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+log_file_name = f"./{timestamp}.log"
+
+logging.basicConfig(
+    filename=log_file_name,         # 日志输出到当前目录下的 <时间戳>.log 文件
+    level=logging.INFO,             # 日志级别：INFO 及以上
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 
 # 初始化 WGS84 到 UTM 的投影转换器
@@ -68,7 +80,7 @@ T = 3  # horizon length
 # mpc parameters
 R = np.diag([0.1, 0.1])  # input cost matrix
 Rd = np.diag([0.01, 1.0])  # input difference cost matrix
-Q = np.diag([1000.0, 1000.0, 0.01, 2])  # state cost matrix
+Q = np.diag([1000.0, 1000.0, 0.1, 1.0])  # state cost matrix
 Qf = Q  # state final matrix
 GOAL_DIS = 1.5  # goal distance
 STOP_SPEED = 0.5 / 3.6  # stop speed
@@ -78,7 +90,7 @@ MAX_TIME = 500.0  # max simulation time
 MAX_ITER = 1  # Max iteration
 DU_TH = 0.1  # iteration finish param
 
-TARGET_SPEED = 10.0 / 3.6  # [m/s] target speed
+TARGET_SPEED = 30.0 / 3.6  # [m/s] target speed
 N_IND_SEARCH = 40  # Search index number
 
 DT = 0.33  # [s] time tick
@@ -92,7 +104,7 @@ WHEEL_WIDTH = 0.2  # [m]
 TREAD = 0.7  # [m]
 WB = 3  # [m]
 
-MAX_STEER = np.deg2rad(69)  # 63 maximum steering angle [rad]
+MAX_STEER = np.deg2rad(63)  # maximum steering angle [rad]
 MAX_DSTEER = np.deg2rad(30.0)  # maximum steering speed [rad/s]
 MAX_SPEED = 55.0 / 3.6  # maximum speed [m/s]
 MIN_SPEED = -20.0 / 3.6  # minimum speed [m/s]
@@ -312,12 +324,6 @@ class VehicleTrajectoryFollower:
         self.dl = 1  # 轨迹点之间的间隔
         self.closest_index = 0
         self.far_index = 45
-        self.offset_point = 5 # 最近点朝前挪动点数
-        self.previous_turn_angle = 0
-        self.max_turn_rate = 6
-        self.real_speed = 0
-        self.target_ind = 0
-        
         # self.cx, self.cy, self.cyaw, self.ck = read_csv(trajectory_csv)
         
         self.cx, self.cy, self.cyaw, self.ck,self.sp = None, None, None, None, None
@@ -328,7 +334,11 @@ class VehicleTrajectoryFollower:
         else:
             self.sp = None
             
-
+        self.previous_turn_angle = 0
+        self.max_turn_rate = 6
+        self.predict_traj = []
+        self.target_points = []
+        self.target_ind = 0
         
     def init_mpc(self):
         self.goal = [self.cx[-1], self.cy[-1]]
@@ -358,8 +368,11 @@ class VehicleTrajectoryFollower:
     # 得到mpc迭代的结果
     def calculate_turn_angle(self, ego_state, ego_yaw, ego_v):
         # 暂时定死ego_v
-        self.real_speed = ego_v
-        ego_v = 2.7 
+        if ego_v < 10:
+            ego_v = 2.7
+        else:
+            ego_v = ego_v / 3.6
+        
         
         # 计算参考轨迹
         if self.sp is None:
@@ -385,6 +398,7 @@ class VehicleTrajectoryFollower:
         oa, odelta, ox, oy, oyaw, ov = self.iterative_linear_mpc_control(
             self.xref, self.x0, self.dref, self.oa, self.odelta
         )
+        self.predict_traj = ox.tolist() + oy.tolist()
         # print("x0:         ", self.x0)
         # print("ox:         ", ox)
         # print("x reference:", self.xref[0])
@@ -433,18 +447,17 @@ class VehicleTrajectoryFollower:
             # -pi,pi
             # print("di deg = ", di_deg, "ai = ", ai)
             
-            if di_deg*WHEEL_FACTOR>500:
-                turn_angle = 500
-            elif di_deg*WHEEL_FACTOR<-500:
-                turn_angle = -500
+            if di_deg*WHEEL_FACTOR>460:
+                turn_angle = 460
+            elif di_deg*WHEEL_FACTOR<-460:
+                turn_angle = -460
             else:
                 # print("di_deg in else: ",di_deg)
                 turn_angle = di_deg*WHEEL_FACTOR 
 
             # print("===================turn angle: ",turn_angle)
             # 将转向角转换为度并平滑处理
-            # filtered_angle = self.smooth_turn_angle(-turn_angle)
-            filtered_angle = -turn_angle
+            filtered_angle = self.smooth_turn_angle(-turn_angle)
             # print("===================filtered_angle: ", filtered_angle)
             
             # 更新MPC控制器的上一轮控制输入
@@ -455,21 +468,61 @@ class VehicleTrajectoryFollower:
             print("MPC computation failed, using default values.")
             return 0, 0
                     
+    # def calc_ref_trajectory(self, state, cx, cy, cyaw, ck, sp, dl, pind):
+    #     xref = np.zeros((NX, T + 1))
+    #     dref = np.zeros((1, T + 1))
+    #     ncourse = len(cx)
+
+    #     temp_ind, _ = self.calc_nearest_index(state, cx, cy, cyaw, 0)
+    #     self.closest_index = temp_ind 
+    #     if state.v*3.6 > 15:
+    #         ind = temp_ind + 10
+    #         print("+++++++++++++++++++++++++++++++ ", 10)
+    #     else: 
+    #         ind = temp_ind + 5
+    #         print("================================", 5)
+    #     if pind >= ind:
+    #         ind = pind
+    #     ind = min(len(cx)-1,ind)
+    #     xref[0, 0] = cx[ind]
+    #     xref[1, 0] = cy[ind]
+    #     xref[2, 0] = sp[ind]
+    #     xref[3, 0] = cyaw[ind]
+    #     dref[0, 0] = 0.0  # steer operational point should be 0
+    #     # dref[0, 0] = self.calculate_reference_steer(state, cyaw[ind])
+
+    #     travel = 0.0
+
+    #     for i in range(T + 1):
+    #         travel += abs(state.v) * DT  # 累计形式的距离
+    #         dind = int(round(travel / dl))  # dl是路径点的间隔，travel/dl是当前车辆已经行驶的路径点数
+    #         print("参考轨迹点索引：",ind+dind)
+    #         if (ind + dind) < ncourse:  #n course是路径点的总数，判断是否超出路径点的总数
+    #             xref[0, i] = cx[ind + dind]
+    #             xref[1, i] = cy[ind + dind]
+    #             xref[2, i] = sp[ind + dind]
+    #             xref[3, i] = cyaw[ind + dind]
+    #             dref[0, i] = 0.0
+    #         else:
+    #             xref[0, i] = cx[ncourse - 1]
+    #             xref[1, i] = cy[ncourse - 1]
+    #             xref[2, i] = sp[ncourse - 1]
+    #             xref[3, i] = cyaw[ncourse - 1]
+    #             dref[0, i] = 0.0
+
+    #     return xref, ind, dref
+
     def calc_ref_trajectory(self, state, cx, cy, cyaw, ck, sp, dl, pind):
         xref = np.zeros((NX, T + 1))
         dref = np.zeros((1, T + 1))
         ncourse = len(cx)
 
-        temp_ind, _ = self.calc_nearest_index(state, cx, cy, cyaw, 0)
-        self.closest_index = temp_ind
-        
-        # 根据速度定偏移量
-        if self.real_speed >= 8:
-            self.offset_point = 5
-        else:
-            self.offset_point = 3
-        
-        ind = temp_ind + self.offset_point
+        temp_ind, min_diff_index = self.calc_distance_index(state, cx[self.closest_index:], cy[self.closest_index:], cyaw[self.closest_index:], 0)
+        logging.info(f"state.v: {state.v}, nearest_index: { self.closest_index+temp_ind,}, min_diff_Index:{ self.closest_index+min_diff_index}")
+        print("+++++++++++++++++++++++++++++++ ", self.closest_index+temp_ind, "---------------------------------------: ", self.closest_index+min_diff_index)
+        ind = self.closest_index+min_diff_index
+        # update
+        self.closest_index += temp_ind
         
         if pind >= ind:
             ind = pind
@@ -482,24 +535,18 @@ class VehicleTrajectoryFollower:
         # dref[0, 0] = self.calculate_reference_steer(state, cyaw[ind])
 
         travel = 0.0
-
+        self.target_points = []
         for i in range(T + 1):
             travel += abs(state.v) * DT  # 累计形式的距离
             dind = int(round(travel / dl))  # dl是路径点的间隔，travel/dl是当前车辆已经行驶的路径点数
-
+            print("参考轨迹点索引：",ind+dind)
+            self.target_points.append([cx[ind + dind], cy[ind + dind]])
             if (ind + dind) < ncourse:  #n course是路径点的总数，判断是否超出路径点的总数
-                # xref[0, i] = cx[ind + dind]
-                # xref[1, i] = cy[ind + dind]
-                # xref[2, i] = sp[ind + dind]
-                # xref[3, i] = cyaw[ind + dind]
-                # dref[0, i] = 0.0
-            # if (ind + i) < ncourse:
-                xref[0, i] = cx[ind + i]
-                xref[1, i] = cy[ind + i]
-                xref[2, i] = sp[ind + i]
-                xref[3, i] = cyaw[ind + i]
+                xref[0, i] = cx[ind + dind]
+                xref[1, i] = cy[ind + dind]
+                xref[2, i] = sp[ind + dind]
+                xref[3, i] = cyaw[ind + dind]
                 dref[0, i] = 0.0
-                dref[0, i] = self.calculate_reference_steer(state, cyaw[ind + dind])
             else:
                 xref[0, i] = cx[ncourse - 1]
                 xref[1, i] = cy[ncourse - 1]
@@ -508,6 +555,7 @@ class VehicleTrajectoryFollower:
                 dref[0, i] = 0.0
 
         return xref, ind, dref
+
 
     def calculate_reference_steer(self, state, ref_yaw):
         # 简单的参考转向角计算，可以根据需要调整
@@ -553,6 +601,32 @@ class VehicleTrajectoryFollower:
             mind *= -1
 
         return ind, mind
+
+    def calc_distance_index(self, state, cx, cy, cyaw, pind):
+        # print(len(cx[pind:(pind + N_IND_SEARCH)]))
+        drive_distance = state.v * (DT*5)
+        # if drive_distance <= 5:
+        #     drive_distance = 5
+            
+        dx = [state.x - icx for icx in cx]
+        dy = [state.y - icy for icy in cy]
+
+        min_diff = 10000000000 # 误差之间最小值
+        min_diff_d = 1000000000
+        nearest_index = 1000000000
+        nearest_distance = 100000000
+        for i, (idx, idy) in enumerate(zip(dx,dy)):
+            distance = math.sqrt(idx ** 2 + idy ** 2)
+            if distance < nearest_distance:
+                nearest_distance = distance
+                nearest_index = i
+        
+            diff  = abs(distance-drive_distance)
+            if i >= nearest_index and diff < min_diff:
+                min_diff = diff
+                min_diff_d = i
+        return nearest_index, min_diff_d
+
 
     def iterative_linear_mpc_control(self, xref, x0, dref, oa, od):
         """
@@ -684,7 +758,7 @@ class VehicleTrajectoryFollower:
     
     
     def calculate_speedAndacc(self, turn_angle, current_position, current_speed, is_obstacle = False, points_num_threshold=20,
-                              high_speed = 30,
+                              high_speed = 25,
                               low_speed = 5):
         if current_speed < 1:
             speed = low_speed
@@ -727,10 +801,10 @@ class VehicleTrajectoryFollower:
         if far_turn_angle > 180:
             far_turn_angle -= 360        
         # 映射到方向盘转角
-        if far_turn_angle * WHEEL_FACTOR > 500:
-            far_turn_angle = 500
-        elif far_turn_angle * WHEEL_FACTOR < -500:
-            far_turn_angle = -500
+        if far_turn_angle * WHEEL_FACTOR > 460:
+            far_turn_angle = 460
+        elif far_turn_angle * WHEEL_FACTOR < -460:
+            far_turn_angle = -460
         else:
             far_turn_angle = far_turn_angle * WHEEL_FACTOR    
         print("====== far_turn_angle: ",far_turn_angle)
@@ -747,8 +821,8 @@ class VehicleTrajectoryFollower:
             acc = 0
         
         if is_obstacle:
-            print("==================== find obstacle reduce speed ===========================")
-            if current_speed >= low_speed+2:
+            print("find obstacle reduce speed")
+            if current_speed >= low_speed+5:
                 speed = low_speed
                 acc = -3
             else:
@@ -771,6 +845,5 @@ class VehicleTrajectoryFollower:
         
         
     
-if __name__ == '__main__':
-    main()
-
+# if __name__ == '__main__':
+#     main()
